@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Production>
+	<!--左边列-->
+	
+	<text x='0' y='0' font='' fontsize=''>生产日期</text>
+	<text x='0' y='50' font='' fontsize=''>保质日期</text>
+	<date x='100' y='0' font='' fontsize='' style=''>20130808</date>
+	<date x='100' y='50' font='' fontsize='' style=''>20140808</date>
+	<time x='0' y='100' font='' fontsize='' style=''>13:15:15</time>
+	<text x='0' y='150' font='' fontsize=''>计数器</text>
+	<count x='100' y='150' font='' fontsize='' start='' step='' iter='' up=''>100</count>
+	<picture x='0' y='250' font='' fontsize='' alt='img'></picture>
+</Production>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>文件管理</title>
+	<style type="text/css">
+	input{width:80px;};
+	label{width:80px;}
+	</style>
+
+	<script language="javascript">
+
+    </script>
+</head>
+<body>
+	<table>
+		<input type="checkbox" name="vehicle" value="Bike">I have a bike<br/>
+		<input type="checkbox" name="vehicle" value="Car">I have a car<br/>
+	</table>
+	<fieldset>
+		<input type="button" value="新建" onClick="window.location.href='cgi-bin/xml?action=new'">
+		<input type="submit" value="打开" onClick='doOpen()'>
+		<input type="submit" value="删除" onClick='doDel()'>
+		<input type="submit" value="拷贝" onClick='doCopy()'>
+	</fieldset>
+</body>
+</html>
+</html>

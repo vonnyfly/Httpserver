@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>编辑</title>
+	<style type="text/css">
+	input{width:80px;};
+	label{width:80px;}
+	</style>
+
+	<script language="javascript">     
+    
+    function addRow(){
+    	//添加一行 
+    	var rows = tab.rows.length
+		var newTr = tab.insertRow(tab.rows.length); 
+		//添加两列 
+		// var newTd8 = newTr.insertCell();
+		// var newTd7 = newTr.insertCell(); 
+		// var newTd6 = newTr.insertCell(); 
+		// var newTd5 = newTr.insertCell(); 
+		// var newTd4 = newTr.insertCell(); 
+		// var newTd3 = newTr.insertCell(); 
+		// var newTd2 = newTr.insertCell(); 
+		// var newTd1 = newTr.insertCell(); 
+
+		// var newTd1 = newTr.insertCell();
+		// var newTd2 = newTr.insertCell(); 
+		// var newTd3 = newTr.insertCell(); 
+		// var newTd4 = newTr.insertCell(); 
+		// var newTd5 = newTr.insertCell(); 
+		// var newTd6 = newTr.insertCell(); 
+		// var newTd7 = newTr.insertCell(); 
+		// var newTd8 = newTr.insertCell(); 
+
+		// var newTd=newTr.insertCell();
+		// newTd.innerHTML='<label>'+ rows + '</label>';
+		// var newTd=newTr.insertCell();
+		// //newTd.innerHTML='<input type="text" name='+fieldName+' id='+fieldName+' value='+fieldName+'>';
+		// newTd.innerHTML='<select name="" id=""><option value="text">文本</option><option value="date">日期</option><option value="time">时间</option><option value="count">计数</option><option value="picture">图片</option></select>'
+		// var newTd=newTr.insertCell();
+		// newTd.innerHTML='<input type="text" name='+fieldValue+' id='+fieldValue+' value='+fieldValue+'>';
+		// var newTd=newTr.insertCell();
+		// newTd.innerHTML='<input type="text" name='+coordXName+' value='+coordX+'>';
+		// var newTd=newTr.insertCell();
+		// newTd.innerHTML='<input type="text" name='+coordYName+' value='+coordY+'>';
+		// var newTd=newTr.insertCell();
+		// // newTd7.innerHTML='<input type="button" value="添加字段" name="btn1" id="btn1">';
+		// newTd.innerHTML='<input type="button" value="删除字段" name="btn1" id="btn1" onClick="delRow(this)">';
+		var fieldName = 'field' + rows;
+		var fieldValue= 'value' + rows;
+		var coordXName = 'x' + rows;
+		var coordYName = 'y' + rows;
+		var coordX = (rows%2)* 400;
+		var coordY = (rows/2)* 40;
+
+		var newTd=newTr.insertCell();
+		newTd.innerHTML='<label>'+ rows + '</label>';
+		var newTd=newTr.insertCell();
+		//newTd.innerHTML='<input type="text" name='+fieldName+' id='+fieldName+' value='+fieldName+'>';
+		newTd.innerHTML='<select name="" id=""><option value="text">文本</option><option value="date">日期</option><option value="time">时间</option><option value="count">计数</option><option value="picture">图片</option></select>'
+		
+		var newTd=newTr.insertCell();
+		newTd.innerHTML='<input type="text" name=x value='+coordX+'>';
+		var newTd=newTr.insertCell();
+		newTd.innerHTML='<input type="text" name=y value='+coordY+'>';
+
+		var newTd=newTr.insertCell();
+		newTd.innerHTML='<input type="text" name='+fieldValue+' id='+fieldValue+' value='+fieldValue+'>';
+
+		var newTd=newTr.insertCell();
+		// newTd7.innerHTML='<input type="button" value="添加字段" name="btn1" id="btn1">';
+		newTd.innerHTML='<input type="button" value="删除字段" name="btn1" id="btn1" onClick="delRow(this)">';
+
+
+    }
+    function delRow (obj)
+	{ 
+		if( tab.rows.length > 2){
+		  	obj.parentNode.parentNode.removeNode(true);   
+		}
+	}
+
+    function doXML(del){
+    	if(del == 0){
+    	var xmlDocument = '<?xml version="1.0" encoding="UTF-8" ?><Production>';
+		var httpRequest;
+		var table = document.getElementById("tab");
+		var rows=table.rows;
+		for(var i=1;i<rows.length;++i){
+			var cells=rows[i].cells; 
+			xmlDocument += '<' + cells[1].childNodes[0].value;
+			for(var j=2;j<cells.length - 2;j++){ 
+				xmlDocument += ' ' + cells[j].childNodes[0].name + '=' + cells[j].childNodes[0].value;
+               //alert("name=" +cells[j].childNodes[0].name +" value="+ cells[j].childNodes[0].value);                
+              }
+              xmlDocument += '>' + cells[j].childNodes[0].value + '</' + cells[1].childNodes[0].value+'>';
+		}
+		// 	xmlDocument += fill_xml_helper(defaultRows[i],table.rows[i]);
+
+		 xmlDocument += "</Production>";
+
+    	}
+		 //alert(xmlDocument)
+		 httpRequest = new XMLHttpRequest();
+		 if(del == 0){ 
+		 	httpRequest.open('POST', "cgi-bin/xml.exe?ops=add&file="+document.getElementById("file").value+'.xml', false);
+		 	httpRequest.send(xmlDocument);
+		}else{
+			httpRequest.open('GET', "cgi-bin/xml.exe?ops=del&file="+document.getElementById("file").value+'.xml', false);
+			httpRequest.send();
+		}
+		 
+    }
+    </script>
+</head>
+<body>
+	<!-- <form action="cgi-bin/setProduct.exe" method="post" id="form"> -->
+	<!-- <form action="" method="" id="form"> -->
+		<table id="tab">
+			<tr>
+				<th>
+					<label>序号</label></th>
+				<th>
+					<label>类型</label></th>
+				<th>
+					<label>X</label></th>
+				</th>
+				<th>
+					<label>Y</label></th>
+				<th>
+					<label>预览</label></th>
+				</th>					
+				<th>
+					<!-- <input type="button" value="删除字段" name="btn1" id="btn1" onClick="delRow(this.parentElement.rowIndex)"> -->
+					<label>操作</label>
+				</th>
+			</tr>
+			<!-- <tr>
+				<th>
+					<input type="text" name="field0" id="field0" value="field0"></th>
+				<th>
+					<input type="text" name="value0" id="value0" value="value0"></th>
+				<th>
+					<input type="text" name="x0" id="x0" value='0'></th>
+				<th>
+					<input type="text" name="y0" id="y0" value='0'></th>
+				<th>
+					
+				<th>
+				</th>
+			</tr> -->
+		</table>
+		<fieldset>
+			<p>
+				<input type="button" value="添加字段" onClick="addRow()">
+				<label for="">文件名:</label>
+				<input type="text" id='file' value="app">
+				<input type="submit" value="提交修改" onClick='doXML(0)'>
+				<input type="submit" value="删除文件" onClick='doXML(1)'></p>
+		</fieldset>
+	<!-- </form> -->
+</body>
+</html>
+<!-- <body>
+<form id="form1" name="form1" method="get" action="cgi-bin/fileOps">
+	<table width="100%" border="0">
+		<tr>
+			<td width="14%">
+				<div align="right">文本：</div>
+			</td>
+			<td width="86%">
+				<textarea name="textarea" id="textarea"  rows="5" style="width:30%;" ></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div align="right">日期格式1：</div>
+			</td>
+			<td>
+				<input type="text" name="textfield" id="textfield"  style="width:30%;" value="2013/01/28"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div align="right">日期格式2：</div>
+			</td>
+			<td>
+				<input type="text" name="textfield2" id="textfield2" style="width:30%;" value="01/28/2013"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div align="right">时间格式1:</div>
+			</td>
+			<td>
+				<input type="text" name="textfield3" id="textfield3" style="width:30%;" value="HH:MM:SS"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div align="right">计数器：</div>
+			</td>
+			<td>
+				<input type="text" name="textfield4" id="textfield4" style="width:30%;" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div align="right">图片：</div>
+			</td>
+			<td>
+				<input type="image" name="imageField" id="imageField" src="preview.jpg" />
+			</td>
+		</tr>
+	</table>
+	<p align="center">
+		<input type="submit" name="bNew" id="bNew" value="新建" onclick="window.location.href='print.html'"/>
+	</p>
+	<p align="center">
+		<input type="submit" name="bOpen" id="bOpen" value="打开" onclick="window.location.href='print.html'"/>
+	</p>
+	<p align="center">
+		<input type="submit" name="bDel" id="bDel" value="删除" onclick="window.location.href='print.html'"/>
+	</p>
+</form>
+</body>
+-->
+</html>
