@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>文件管理</title>
+	<style type="text/css">
+	input{width:80px;};
+	label{width:80px;}
+	</style>
+
+	<script language="javascript" src="../xml.js">
+	
+    </script>
+</head>
+<body>
+	<!-- <form action="xml?" onSubmit="checkListSubmit()"> -->
+	<table>
+		<input type="checkbox" name="file" value="Bike">I have a bike<br/>
+		<input type="checkbox" name="file" value="Car">I have a car<br/>
+	</table>
+	<fieldset>
+		<input type="button" value="新建" onClick="window.location.href='xml?action=new'">
+		<input type="submit" value="打开" onClick='doAction("open")'>
+		<input type="submit" value="删除" onClick='doAction("delete")'>
+		<input type="submit" value="拷贝" onClick='doAction("copy")'>
+	</fieldset>
+
+</body>
+</html>
+</html>

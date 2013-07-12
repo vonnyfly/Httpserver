@@ -8,21 +8,35 @@
 	label{width:80px;}
 	</style>
 
-	<script language="javascript">
-
-    </script>
+	<script language="javascript" src="xml.js"></script>
+	<script type="text/javascript">
+	window.onload=function(){
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  	httpRequest=new XMLHttpRequest();
+	  }
+	  else
+	  {// code for IE6, IE5
+	  	httpRequest=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  httpRequest.open('GET', "/cgi-bin/xml?action=list", false);
+	  httpRequest.send();
+	  document.getElementById("list").innerHTML=httpRequest.responseText;
+	}
+	</script>
 </head>
 <body>
+	<!-- <form action="xml?" onSubmit="checkListSubmit()"> -->
 	<table>
-		<input type="checkbox" name="vehicle" value="Bike">I have a bike<br/>
-		<input type="checkbox" name="vehicle" value="Car">I have a car<br/>
+		<div id="list"></div>
 	</table>
 	<fieldset>
-		<input type="button" value="新建" onClick="window.location.href='cgi-bin/xml?action=new'">
-		<input type="submit" value="打开" onClick='doOpen()'>
-		<input type="submit" value="删除" onClick='doDel()'>
-		<input type="submit" value="拷贝" onClick='doCopy()'>
+		<input type="button" value="新建" onClick="window.location.href='/cgi-bin/xml?action=new'">
+		<input type="submit" value="编辑" onClick='doAction("edit")'>
+		<input type="submit" value="删除" onClick='doAction("delete")'>
+		<input type="submit" value="拷贝" onClick='doAction("copy")'>
 	</fieldset>
+
 </body>
 </html>
 </html>

@@ -9,7 +9,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int written=0;
 	char toHtml[1000];
 
-	TiXmlDocument doc("book.xml" );
+	TiXmlDocument doc("app.xml" );
 	bool loadOkay = doc.LoadFile();
 
 	if ( !loadOkay )
@@ -41,11 +41,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		fontsize = itemElement->Attribute( "fontsize");
 		text = itemElement->GetText();
 
-		if(strlen(font) == 0)
+		if(font == NULL || strlen(font) == 0)
 			font = "arial";
-		if(strlen(fontsize) == 0)
+		if(fontsize == NULL || strlen(fontsize) == 0)
 			fontsize = "20px";
-		if(text == 0)
+		if(text == NULL)
 			text = "";
 		printf("font=%s,strlen(font)=%d\n",font,strlen(font) );
 		//if(itemElement->Attribute("style")!=NULL&&strcmp(itemElement->Attribute("alt"),"img")==0){

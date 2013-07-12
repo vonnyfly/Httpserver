@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Production>
+    <苹果 y="20" x="400">text</苹果>
+    <香蕉 y="40" x="0">text</香蕉>
+    <value3 y="60" x="400">text</value3>
+    <value4 y="80" x="0">text</value4>
+</Production>
