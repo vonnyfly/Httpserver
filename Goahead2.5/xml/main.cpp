@@ -6,7 +6,7 @@ char_t CONFIG_FILE[] = L"config.xml";
 
 
 #define strncpy wcsncpy
-#define strlen wcslen
+//#define strlen wcslen
 #define strcmp wcscmp
 #define strncat wcsncat
 #define print wprintf
@@ -29,10 +29,11 @@ void gEditFile(wchar_t *nameBuf)
     wchar_t buf[256];
 
     wchar_t *srcFile = getStoken(&nameBuf);
-    write_data(L"<!doctype html>\n");
-    write_data(L"<html lang=\"en\">\n");
-    write_data(L"<head>\n");
-    write_data(L"   <meta charset=\"UTF-8\" />\n");
+write_data(L"<!DOCTYPE html>\n");
+write_data(L"<html>\n");
+write_data(L"<head>\n");
+write_data(L"<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n");
+
     if(srcFile)
         write_data(L"   <title>编辑</title>\n");
     else
@@ -89,30 +90,44 @@ void gEditFile(wchar_t *nameBuf)
         while(itemElement!= NULL){
             int x=0,y=0;
             const char *font,*fontsize,*text;
+            char *textGBK;
+            wchar_t *textW;
+
             itemElement->Attribute( "x" ,&x);
             itemElement->Attribute( "y" ,&y);
                 // font = itemElement->Attribute( "font");
                 // fontsize = itemElement->Attribute( "fontsize");
             text = itemElement->GetText();
+            UTF8ToGBK(text,&textGBK);
+            AnsiToUnicode(textGBK,&textW);
+            //hexdump(text,strlen(text));
+            //hexdump(textGBK,strlen(textGBK));
+            //hexdump(textW,2*strlen(text));
+            //hexdump("你好",strlen("你好"));
+			//hexdump(L"你好",2 * strlen("你好"));
+            //DBG(L"你好");
+            //DBG(L"text = %s",textW);
 
             write_data(L"                   <tr>\n");
             write_data(L"                           <th><label>%d</label></th>\n",++id);
             write_data(L"                           <th><select name=\"\" id=\"\"><option value=\"text\">文本</option><option value=\"date\">日期</option><option value=\"time\">时间</option><option value=\"count\">计数器</option><option value=\"picture\">图片</option></select></th>\n");
             write_data(L"                           <th><input type=\"text\" name=\"x\" value=%d></th>\n",x);
-            write_data(L"                           <th><input type=\"text\" name=\"y\" value=%></th>\n",y);
-            write_data(L"                           <th><input type=\"text\" name=\"\" id=\"\" value=\"%s\"></th>\n",text);
+            write_data(L"                           <th><input type=\"text\" name=\"y\" value=%d></th>\n",y);
+            write_data(L"                           <th><input type=\"text\" name=\"\" id=\"\" value=\"%s\"></th>\n",textW);
             write_data(L"                           <th><input type=\"button\" value=\"删除字段\" onClick=\"delRow(this)\"></th>\n");
             write_data(L"                   </tr>\n");
             itemElement = itemElement->NextSiblingElement();
+            free(textGBK);
+            free(textW);
         }
     }
-
+    (*wcsrchr(srcFile,L'.')) = 0;
     write_data(L"           </table>\n");
     write_data(L"           <fieldset>\n");
     write_data(L"                   <p>\n");
     write_data(L"                           <input type=\"button\" value=\"添加字段\" onClick=\"addRow()\">\n");
     write_data(L"                           <label for=\"\">文件名:</label>\n");
-    write_data(L"                           <input type=\"text\" id='file' value=\"app\">\n");
+    write_data(L"                           <input type=\"text\" id='file' value=\"%s\">\n",srcFile);
     write_data(L"                           <input type=\"submit\" value=\"提交修改\" onClick='doXML(0)'>\n");
     write_data(L"                           <input type=\"submit\" value=\"删除文件\" onClick='doXML(1)'></p>\n");
     write_data(L"           </fieldset>\n");
@@ -135,8 +150,7 @@ void gSaveFile(wchar_t *srcFile,wchar_t *nameBuf)
 
     int len,rlen;
 
-    //UTF16 error desc
-    wchar_t *to;
+
 
     swprintf(pathW,L"%s\\%s",DATA_DIR,nameBuf);
     //DBG(L"save path=%s",pathW);
@@ -152,12 +166,14 @@ void gSaveFile(wchar_t *srcFile,wchar_t *nameBuf)
 
    if(ptr&&buf){//need to utf-8
     doc.Parse(buf, 0, TIXML_DEFAULT_ENCODING);
-    //AnsiToUnicode(doc.ErrorDesc(),&to);
-    //DBG(L"doc.parse:%s",to);
-    doc.SaveFile(path);  
-    AnsiToUnicode(doc.ErrorDesc(),&to);
-    DBG(L"doc.parse:%s",to);
-    free(to);
+    doc.SaveFile(path);
+    if(doc.Error()){
+        //UTF16 error desc
+        wchar_t *to;
+        AnsiToUnicode(doc.ErrorDesc(),&to);
+        DBG(L"doc.parse:%s",to);
+        free(to);
+    }  
 }else{
     DBG(L"save error");
 }
@@ -177,7 +193,7 @@ void gNewFile()
 void gDeleteFile(wchar_t *nameBuf)
 {
     wchar_t *pos;
-    while( (pos = getStoken(&nameBuf)) && (strlen(pos) > 0) ){
+    while( (pos = getStoken(&nameBuf)) && (wcslen(pos) > 0) ){
         char_t path[256];
         swprintf(path,L"%s\\%s",DATA_DIR,pos);
         DBG(L"del,%s",path);
@@ -254,7 +270,7 @@ static wchar_t *getStoken(wchar_t **str)
       return begin;
   }
   *pos=L'\0';
-  if(strlen(*str)>0){
+  if(wcslen(*str)>0){
     *str = pos + 1;
 }else{
     *str = NULL;
@@ -270,7 +286,7 @@ static void ListCurDir(char_t *dir)
     wchar_t DirSpec[MAX_PATH + 1];
     DWORD dwError;
 
-    strncpy (DirSpec, dir, strlen(dir) + 1);
+    strncpy (DirSpec, dir, wcslen(dir) + 1);
     strncat (DirSpec, L"/*", 3);
 
     hFind = FindFirstFile(DirSpec, &FindFileData);

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Production>
-    <value1 y="20" x="400">text</value1>
-    <value2 y="40" x="0">text</value2>
-    <value3 y="60" x="400">text</value3>
-    <value4 y="80" x="0">text</value4>
+    <text x="400" y="">你好</text>
+    <text x="0" y="360">你好</text>
+    <text x="400" y="380">value19</text>
+    <text x="0" y="400">你好</text>
+    <text x="400" y="420">你好</text>
 </Production>

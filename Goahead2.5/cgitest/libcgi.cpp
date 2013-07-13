@@ -3,22 +3,35 @@
 HANDLE hOut,hIn;
 FILE* fenv;
 
-void hexdump(void *_data, unsigned len)
+void hexdump(const void *_data, unsigned len)
 {
     unsigned char *data = (unsigned char *)_data;
     unsigned count;
 
     for (count = 0; count < len; count++) {
         if ((count & 15) == 0)
-            write_data(L"%04x:", count);
-        write_data(L" %02x %c", *data,
+            write_data(L"<!-- %04x:", count);
+        write_data(L" %02x", *data);
+        data++;
+        if ((count & 15) == 15)
+            write_data(L"-->\n");
+    }
+    if ((count & 15) != 0)
+        write_data(L"-->\n");
+
+    // print view char
+    data = (unsigned char *)_data;
+    for (count = 0; count < len; count++) {
+        if ((count & 15) == 0)
+            write_data(L"<!--      ", count);
+        write_data(L" %2c",
                 (*data < 32) || (*data > 126) ? '.' : *data);
         data++;
         if ((count & 15) == 15)
-            write_data(L"\n");
+            write_data(L"-->\n");
     }
     if ((count & 15) != 0)
-        write_data(L"\n");
+        write_data(L"-->\n");
 }
 
 char_t* getCgiData(char_t* buf,unsigned int buf_size,int *nread)
@@ -231,4 +244,41 @@ HRESULT __fastcall UnicodeToAnsi2(wchar_t* pszW, LPSTR* ppszA)
     return NOERROR;
 
 }
-				
+
+void UTF8ToGBK(const char *szOut, char **out )
+{
+ unsigned short *wszGBK;
+ char *szGBK;
+ //长度
+ int len = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)szOut, -1, NULL, 0);
+ wszGBK = new unsigned short[len+1];
+ memset(wszGBK, 0, len * 2 + 2);
+ MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)szOut, -1, (LPWSTR)wszGBK, len);
+ //长度
+ len = WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
+ *out = new char[len+1];
+ szGBK = *out;
+ memset(szGBK, 0, len + 1);
+ WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, szGBK, len, NULL, NULL);
+ //szOut = szGBK; //这样得到的szOut不正确，因为此句意义是将szGBK的首地址赋给szOut，当delete []szGBK执行后szGBK的内
+                             //存空间将被释放，此时将得不到szOut的内容
+ delete []wszGBK;
+}
+
+void GBKToUTF8(char* &szOut)
+{
+ char* strGBK = szOut;
+ int len=MultiByteToWideChar(CP_ACP, 0, (LPCSTR)strGBK, -1, NULL,0);
+ unsigned short * wszUtf8 = new unsigned short[len+1];
+ memset(wszUtf8, 0, len * 2 + 2);
+ MultiByteToWideChar(CP_ACP, 0, (LPCSTR)strGBK, -1, (LPWSTR)wszUtf8, len);
+ len = WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)wszUtf8, -1, NULL, 0, NULL, NULL);
+ char *szUtf8=new char[len + 1];
+ memset(szUtf8, 0, len + 1);
+ WideCharToMultiByte (CP_UTF8, 0, (LPWSTR)wszUtf8, -1, szUtf8, len, NULL,NULL);
+ //szOut = szUtf8;
+ memset(szOut,'\0',strlen(szUtf8)+1);
+ memcpy(szOut,szUtf8,strlen(szUtf8));
+ delete[] szUtf8;
+ delete[] wszUtf8;
+}

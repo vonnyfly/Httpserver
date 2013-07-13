@@ -31,11 +31,13 @@ extern char_t* getCgiData(char_t* buf,unsigned int buf_size,int *nread);
 extern char_t* getCgiDataWithMalloc(int *len);
 extern void freeCgiDataWithMalloc(char_t *pData);
 
-extern void hexdump(void *_data, unsigned len);
+extern  void hexdump(const void *_data, unsigned len);
 
 extern char* UnicodeToAnsi( const wchar_t* szStr );
 extern HRESULT __fastcall AnsiToUnicode(LPCSTR pszA, wchar_t** ppszW);
 extern HRESULT __fastcall UnicodeToAnsi2(wchar_t* pszW, LPSTR* ppszA);
+
+extern void UTF8ToGBK(const char *szOut, char** out);
 #ifdef __cplusplus
 }
 #endif

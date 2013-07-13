@@ -1,7 +1,7 @@
-write_data(L"<!doctype html>\n");
-write_data(L"<html lang=\"en\">\n");
+write_data(L"<!DOCTYPE html>\n");
+write_data(L"<html>\n");
 write_data(L"<head>\n");
-write_data(L"	<meta charset=\"UTF-8\" />\n");
+write_data(L"<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n");
 write_data(L"	<title>编辑</title>\n");
 write_data(L"	<style type=\"text/css\">\n");
 write_data(L"	input{width:80px;};\n");
