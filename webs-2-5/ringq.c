@@ -35,7 +35,7 @@
  *    ^                           ^                       ^               ^
  *    |                           |                       |               |
  *  rq->buf                    rq->servp               rq->endp      rq->enduf
- *     
+ *
  *	The queue is empty when servp == endp.  This means that the queue will hold
  *	at most rq->buflen -1 bytes.  It is the filler's responsibility to ensure
  *	the ringq is never filled such that servp == endp.
@@ -72,29 +72,29 @@ int			ringqGrowCalls = 0;
  *	Create a new ringq. "increment" is the amount to increase the size of the
  *	ringq should it need to grow to accomodate data being added. "maxsize" is
  *	an upper limit (sanity level) beyond which the q must not grow. Set maxsize
- *	to -1 to imply no upper limit. The buffer for the ringq is always 
+ *	to -1 to imply no upper limit. The buffer for the ringq is always
  *	dynamically allocated. Set maxsize
  */
 
 int ringqOpen(ringq_t *rq, int initSize, int maxsize)
 {
-	int	increment;
+    int	increment;
 
-	a_assert(rq);
-	a_assert(initSize >= 0);
+    a_assert(rq);
+    a_assert(initSize >= 0);
 
-	increment = getBinBlockSize(initSize);
-	if ((rq->buf = balloc(B_L, (increment))) == NULL) {
-		return -1;
-	}
-	rq->maxsize = maxsize;
-	rq->buflen = increment;
-	rq->increment = increment;
-	rq->endbuf = &rq->buf[rq->buflen];
-	rq->servp = rq->buf;
-	rq->endp = rq->buf;
-	*rq->servp = '\0';
-	return 0;
+    increment = getBinBlockSize(initSize);
+    if ((rq->buf = balloc(B_L, (increment))) == NULL) {
+        return -1;
+    }
+    rq->maxsize = maxsize;
+    rq->buflen = increment;
+    rq->increment = increment;
+    rq->endbuf = &rq->buf[rq->buflen];
+    rq->servp = rq->buf;
+    rq->endp = rq->buf;
+    *rq->servp = '\0';
+    return 0;
 }
 
 /******************************************************************************/
@@ -104,34 +104,34 @@ int ringqOpen(ringq_t *rq, int initSize, int maxsize)
 
 void ringqClose(ringq_t *rq)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (rq == NULL) {
-		return;
-	}
+    if (rq == NULL) {
+        return;
+    }
 
-	ringqFlush(rq);
-	bfree(B_L, (char*) rq->buf);
-	rq->buf = NULL;
+    ringqFlush(rq);
+    bfree(B_L, (char*) rq->buf);
+    rq->buf = NULL;
 }
 
 /******************************************************************************/
 /*
- *	Return the length of the data in the ringq. Users must fill the queue to 
+ *	Return the length of the data in the ringq. Users must fill the queue to
  *	a high water mark of at most one less than the queue size.
  */
 
 int ringqLen(ringq_t *rq)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (rq->servp > rq->endp) {
-		return rq->buflen + rq->endp - rq->servp;
-	} else {
-		return rq->endp - rq->servp;
-	}
+    if (rq->servp > rq->endp) {
+        return rq->buflen + rq->endp - rq->servp;
+    } else {
+        return rq->endp - rq->servp;
+    }
 }
 
 /******************************************************************************/
@@ -141,59 +141,59 @@ int ringqLen(ringq_t *rq)
 
 int ringqGetc(ringq_t *rq)
 {
-	char_t	c;
-	char_t*	cp;
+    char_t	c;
+    char_t*	cp;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (rq->servp == rq->endp) {
-		return -1;
-	}
+    if (rq->servp == rq->endp) {
+        return -1;
+    }
 
-	cp = (char_t*) rq->servp;
-	c = *cp++;
-	rq->servp = (unsigned char *) cp;
-	if (rq->servp >= rq->endbuf) {
-		rq->servp = rq->buf;
-	}
-   /*
-    * 17 Sep 03 BgP -- using the implicit conversion from signed char to
-    * signed int in the return below makes this function work incorrectly when
-    * dealing with UTF-8 encoded text. UTF-8 may include characters that are >
-    * 127, which a signed char treats as negative. When we return a 'negative'
-    * value from this function, it gets converted to a negative 
-    * integer, instead of a small positive integer, which is what we want. 
-    * So, we cast to (unsigned char) before returning, and the problem goes
-    * away...
-    */
-	return (int) ((unsigned char) c);
+    cp = (char_t*) rq->servp;
+    c = *cp++;
+    rq->servp = (unsigned char *) cp;
+    if (rq->servp >= rq->endbuf) {
+        rq->servp = rq->buf;
+    }
+    /*
+     * 17 Sep 03 BgP -- using the implicit conversion from signed char to
+     * signed int in the return below makes this function work incorrectly when
+     * dealing with UTF-8 encoded text. UTF-8 may include characters that are >
+     * 127, which a signed char treats as negative. When we return a 'negative'
+     * value from this function, it gets converted to a negative
+     * integer, instead of a small positive integer, which is what we want.
+     * So, we cast to (unsigned char) before returning, and the problem goes
+     * away...
+     */
+    return (int) ((unsigned char) c);
 }
 
 /******************************************************************************/
 /*
- *	Add a char to the queue. Note if being used to store wide strings 
+ *	Add a char to the queue. Note if being used to store wide strings
  *	this does not add a trailing '\0'. Grow the q as required.
  */
 
 int ringqPutc(ringq_t *rq, char_t c)
 {
-	char_t *cp;
+    char_t *cp;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if ((ringqPutBlkMax(rq) < (int) sizeof(char_t)) && !ringqGrow(rq)) {
-		return -1;
-	}
+    if ((ringqPutBlkMax(rq) < (int) sizeof(char_t)) && !ringqGrow(rq)) {
+        return -1;
+    }
 
-	cp = (char_t*) rq->endp;
-	*cp++ = (char_t) c;
-	rq->endp = (unsigned char *) cp;
-	if (rq->endp >= rq->endbuf) {
-		rq->endp = rq->buf;
-	}
-	return 0;
+    cp = (char_t*) rq->endp;
+    *cp++ = (char_t) c;
+    rq->endp = (unsigned char *) cp;
+    if (rq->endp >= rq->endbuf) {
+        rq->endp = rq->buf;
+    }
+    return 0;
 }
 
 /******************************************************************************/
@@ -203,21 +203,21 @@ int ringqPutc(ringq_t *rq, char_t c)
 
 int ringqInsertc(ringq_t *rq, char_t c)
 {
-	char_t *cp;
+    char_t *cp;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (ringqPutBlkMax(rq) < (int) sizeof(char_t) && !ringqGrow(rq)) {
-		return -1;
-	}
-	if (rq->servp <= rq->buf) {
-		rq->servp = rq->endbuf;
-	}
-	cp = (char_t*) rq->servp;
-	*--cp = (char_t) c;
-	rq->servp = (unsigned char *) cp;
-	return 0;
+    if (ringqPutBlkMax(rq) < (int) sizeof(char_t) && !ringqGrow(rq)) {
+        return -1;
+    }
+    if (rq->servp <= rq->buf) {
+        rq->servp = rq->endbuf;
+    }
+    cp = (char_t*) rq->servp;
+    *--cp = (char_t) c;
+    rq->servp = (unsigned char *) cp;
+    return 0;
 }
 
 /******************************************************************************/
@@ -227,15 +227,15 @@ int ringqInsertc(ringq_t *rq, char_t c)
 
 int ringqPutStr(ringq_t *rq, char_t *str)
 {
-	int		rc;
+    int		rc;
 
-	a_assert(rq);
-	a_assert(str);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(str);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	rc = ringqPutBlk(rq, (unsigned char*) str, gstrlen(str) * sizeof(char_t));
-	*((char_t*) rq->endp) = (char_t) '\0';
-	return rc;
+    rc = ringqPutBlk(rq, (unsigned char*) str, gstrlen(str) * sizeof(char_t));
+    *((char_t*) rq->endp) = (char_t) '\0';
+    return rc;
 }
 
 /******************************************************************************/
@@ -245,10 +245,10 @@ int ringqPutStr(ringq_t *rq, char_t *str)
 
 void ringqAddNull(ringq_t *rq)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	*((char_t*) rq->endp) = (char_t) '\0';
+    *((char_t*) rq->endp) = (char_t) '\0';
 }
 
 /******************************************************************************/
@@ -259,20 +259,20 @@ void ringqAddNull(ringq_t *rq)
 
 int ringqGetcA(ringq_t *rq)
 {
-	unsigned char	c;
+    unsigned char	c;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (rq->servp == rq->endp) {
-		return -1;
-	}
+    if (rq->servp == rq->endp) {
+        return -1;
+    }
 
-	c = *rq->servp++;
-	if (rq->servp >= rq->endbuf) {
-		rq->servp = rq->buf;
-	}
-	return c;
+    c = *rq->servp++;
+    if (rq->servp >= rq->endbuf) {
+        rq->servp = rq->buf;
+    }
+    return c;
 }
 
 /******************************************************************************/
@@ -283,18 +283,18 @@ int ringqGetcA(ringq_t *rq)
 
 int ringqPutcA(ringq_t *rq, char c)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (ringqPutBlkMax(rq) == 0 && !ringqGrow(rq)) {
-		return -1;
-	}
+    if (ringqPutBlkMax(rq) == 0 && !ringqGrow(rq)) {
+        return -1;
+    }
 
-	*rq->endp++ = (unsigned char) c;
-	if (rq->endp >= rq->endbuf) {
-		rq->endp = rq->buf;
-	}
-	return 0;
+    *rq->endp++ = (unsigned char) c;
+    if (rq->endp >= rq->endbuf) {
+        rq->endp = rq->buf;
+    }
+    return 0;
 }
 
 /******************************************************************************/
@@ -304,17 +304,17 @@ int ringqPutcA(ringq_t *rq, char c)
 
 int ringqInsertcA(ringq_t *rq, char c)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	if (ringqPutBlkMax(rq) == 0 && !ringqGrow(rq)) {
-		return -1;
-	}
-	if (rq->servp <= rq->buf) {
-		rq->servp = rq->endbuf;
-	}
-	*--rq->servp = (unsigned char) c;
-	return 0;
+    if (ringqPutBlkMax(rq) == 0 && !ringqGrow(rq)) {
+        return -1;
+    }
+    if (rq->servp <= rq->buf) {
+        rq->servp = rq->endbuf;
+    }
+    *--rq->servp = (unsigned char) c;
+    return 0;
 }
 
 /******************************************************************************/
@@ -325,15 +325,15 @@ int ringqInsertcA(ringq_t *rq, char c)
 
 int ringqPutStrA(ringq_t *rq, char *str)
 {
-	int		rc;
+    int		rc;
 
-	a_assert(rq);
-	a_assert(str);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(str);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	rc = ringqPutBlk(rq, (unsigned char*) str, strlen(str));
-	rq->endp[0] = '\0';
-	return rc;
+    rc = ringqPutBlk(rq, (unsigned char*) str, strlen(str));
+    rq->endp[0] = '\0';
+    return rc;
 }
 
 #endif /* UNICODE */
@@ -345,37 +345,37 @@ int ringqPutStrA(ringq_t *rq, char *str)
 
 int ringqPutBlk(ringq_t *rq, unsigned char *buf, int size)
 {
-	int		this, bytes_put;
+    int		this, bytes_put;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	a_assert(buf);
-	a_assert(0 <= size);
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(buf);
+    a_assert(0 <= size);
 
-/*
- *	Loop adding the maximum bytes we can add in a single straight line copy
- */
-	bytes_put = 0;
-	while (size > 0) {
-		this = min(ringqPutBlkMax(rq), size);
-		if (this <= 0) {
-			if (! ringqGrow(rq)) {
-				break;
-			}
-			this = min(ringqPutBlkMax(rq), size);
-		}
+    /*
+     *	Loop adding the maximum bytes we can add in a single straight line copy
+     */
+    bytes_put = 0;
+    while (size > 0) {
+        this = min(ringqPutBlkMax(rq), size);
+        if (this <= 0) {
+            if (! ringqGrow(rq)) {
+                break;
+            }
+            this = min(ringqPutBlkMax(rq), size);
+        }
 
-		memcpy(rq->endp, buf, this);
-		buf += this;
-		rq->endp += this;
-		size -= this;
-		bytes_put += this;
+        memcpy(rq->endp, buf, this);
+        buf += this;
+        rq->endp += this;
+        size -= this;
+        bytes_put += this;
 
-		if (rq->endp >= rq->endbuf) {
-			rq->endp = rq->buf;
-		}
-	}
-	return bytes_put;
+        if (rq->endp >= rq->endbuf) {
+            rq->endp = rq->buf;
+        }
+    }
+    return bytes_put;
 }
 
 /******************************************************************************/
@@ -385,73 +385,73 @@ int ringqPutBlk(ringq_t *rq, unsigned char *buf, int size)
 
 int ringqGetBlk(ringq_t *rq, unsigned char *buf, int size)
 {
-	int		this, bytes_read;
+    int		this, bytes_read;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	a_assert(buf);
-	a_assert(0 <= size && size < rq->buflen);
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(buf);
+    a_assert(0 <= size && size < rq->buflen);
 
-/*
- *	Loop getting the maximum bytes we can get in a single straight line copy
- */
-	bytes_read = 0;
-	while (size > 0) {
-		this = ringqGetBlkMax(rq);
-		this = min(this, size);
-		if (this <= 0) {
-			break;
-		}
+    /*
+     *	Loop getting the maximum bytes we can get in a single straight line copy
+     */
+    bytes_read = 0;
+    while (size > 0) {
+        this = ringqGetBlkMax(rq);
+        this = min(this, size);
+        if (this <= 0) {
+            break;
+        }
 
-		memcpy(buf, rq->servp, this);
-		buf += this;
-		rq->servp += this;
-		size -= this;
-		bytes_read += this;
+        memcpy(buf, rq->servp, this);
+        buf += this;
+        rq->servp += this;
+        size -= this;
+        bytes_read += this;
 
-		if (rq->servp >= rq->endbuf) {
-			rq->servp = rq->buf;
-		}
-	}
-	return bytes_read;
+        if (rq->servp >= rq->endbuf) {
+            rq->servp = rq->buf;
+        }
+    }
+    return bytes_read;
 }
 
 /******************************************************************************/
 /*
- *	Return the maximum number of bytes the ring q can accept via a single 
+ *	Return the maximum number of bytes the ring q can accept via a single
  *	block copy. Useful if the user is doing their own data insertion.
  */
 
 int ringqPutBlkMax(ringq_t *rq)
 {
-	int		space, in_a_line;
+    int		space, in_a_line;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	
-	space = rq->buflen - RINGQ_LEN(rq) - 1;
-	in_a_line = rq->endbuf - rq->endp;
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	return min(in_a_line, space);
+    space = rq->buflen - RINGQ_LEN(rq) - 1;
+    in_a_line = rq->endbuf - rq->endp;
+
+    return min(in_a_line, space);
 }
 
 /******************************************************************************/
 /*
- *	Return the maximum number of bytes the ring q can provide via a single 
+ *	Return the maximum number of bytes the ring q can provide via a single
  *	block copy. Useful if the user is doing their own data retrieval.
  */
 
 int ringqGetBlkMax(ringq_t *rq)
 {
-	int		len, in_a_line;
+    int		len, in_a_line;
 
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
 
-	len = RINGQ_LEN(rq);
-	in_a_line = rq->endbuf - rq->servp;
+    len = RINGQ_LEN(rq);
+    in_a_line = rq->endbuf - rq->servp;
 
-	return min(in_a_line, len);
+    return min(in_a_line, len);
 }
 
 /******************************************************************************/
@@ -461,21 +461,21 @@ int ringqGetBlkMax(ringq_t *rq)
 
 void ringqPutBlkAdj(ringq_t *rq, int size)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	a_assert(0 <= size && size < rq->buflen);
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(0 <= size && size < rq->buflen);
 
-	rq->endp += size;
-	if (rq->endp >= rq->endbuf) {
-		rq->endp -= rq->buflen;
-	}
-/*
- *	Flush the queue if the endp pointer is corrupted via a bad size
- */
-	if (rq->endp >= rq->endbuf) {
-		error(E_L, E_LOG, T("Bad end pointer"));
-		ringqFlush(rq);
-	}
+    rq->endp += size;
+    if (rq->endp >= rq->endbuf) {
+        rq->endp -= rq->buflen;
+    }
+    /*
+     *	Flush the queue if the endp pointer is corrupted via a bad size
+     */
+    if (rq->endp >= rq->endbuf) {
+        error(E_L, E_LOG, T("Bad end pointer"));
+        ringqFlush(rq);
+    }
 }
 
 /******************************************************************************/
@@ -485,21 +485,21 @@ void ringqPutBlkAdj(ringq_t *rq, int size)
 
 void ringqGetBlkAdj(ringq_t *rq, int size)
 {
-	a_assert(rq);
-	a_assert(rq->buflen == (rq->endbuf - rq->buf));
-	a_assert(0 < size && size < rq->buflen);
+    a_assert(rq);
+    a_assert(rq->buflen == (rq->endbuf - rq->buf));
+    a_assert(0 < size && size < rq->buflen);
 
-	rq->servp += size;
-	if (rq->servp >= rq->endbuf) {
-		rq->servp -= rq->buflen;
-	}
-/*
- *	Flush the queue if the servp pointer is corrupted via a bad size
- */
-	if (rq->servp >= rq->endbuf) {
-		error(E_L, E_LOG, T("Bad serv pointer"));
-		ringqFlush(rq);
-	}
+    rq->servp += size;
+    if (rq->servp >= rq->endbuf) {
+        rq->servp -= rq->buflen;
+    }
+    /*
+     *	Flush the queue if the servp pointer is corrupted via a bad size
+     */
+    if (rq->servp >= rq->endbuf) {
+        error(E_L, E_LOG, T("Bad serv pointer"));
+        ringqFlush(rq);
+    }
 }
 
 /******************************************************************************/
@@ -509,14 +509,14 @@ void ringqGetBlkAdj(ringq_t *rq, int size)
 
 void ringqFlush(ringq_t *rq)
 {
-	a_assert(rq);
-	a_assert(rq->servp);
+    a_assert(rq);
+    a_assert(rq->servp);
 
-	rq->servp = rq->buf;
-	rq->endp = rq->buf;
-	if (rq->servp) {
-		*rq->servp = '\0';
-	}
+    rq->servp = rq->buf;
+    rq->endp = rq->buf;
+    if (rq->servp) {
+        *rq->servp = '\0';
+    }
 }
 
 /******************************************************************************/
@@ -528,38 +528,38 @@ void ringqFlush(ringq_t *rq)
 
 static int ringqGrow(ringq_t *rq)
 {
-	unsigned char	*newbuf;
-	int 			len;
+    unsigned char	*newbuf;
+    int 			len;
 
-	a_assert(rq);
+    a_assert(rq);
 
-	if (rq->maxsize >= 0 && rq->buflen >= rq->maxsize) {
-		return 0;
-	}
+    if (rq->maxsize >= 0 && rq->buflen >= rq->maxsize) {
+        return 0;
+    }
 
-	len = ringqLen(rq);
+    len = ringqLen(rq);
 
-	if ((newbuf = balloc(B_L, rq->buflen + rq->increment)) == NULL) {
-		return 0;
-	}
-	ringqGetBlk(rq, newbuf, ringqLen(rq));
-	bfree(B_L, (char*) rq->buf);
+    if ((newbuf = balloc(B_L, rq->buflen + rq->increment)) == NULL) {
+        return 0;
+    }
+    ringqGetBlk(rq, newbuf, ringqLen(rq));
+    bfree(B_L, (char*) rq->buf);
 
 
-	rq->buflen += rq->increment;
-	rq->endp = newbuf;
-	rq->servp = newbuf;
-	rq->buf = newbuf;
-	rq->endbuf = &rq->buf[rq->buflen];
+    rq->buflen += rq->increment;
+    rq->endp = newbuf;
+    rq->servp = newbuf;
+    rq->buf = newbuf;
+    rq->endbuf = &rq->buf[rq->buflen];
 
-	ringqPutBlk(rq, newbuf, len);
+    ringqPutBlk(rq, newbuf, len);
 
-/*
- *	Double the increment so the next grow will line up with balloc'ed memory
- */
-	rq->increment = getBinBlockSize(2 * rq->increment);
+    /*
+     *	Double the increment so the next grow will line up with balloc'ed memory
+     */
+    rq->increment = getBinBlockSize(2 * rq->increment);
 
-	return 1;
+    return 1;
 }
 
 /******************************************************************************/
@@ -571,13 +571,13 @@ static int ringqGrow(ringq_t *rq)
 
 static int	getBinBlockSize(int size)
 {
-	int	q;
+    int	q;
 
-	size = size >> B_SHIFT;
-	for (q = 0; size; size >>= 1) {
-		q++;
-	}
-	return (1 << (B_SHIFT + q));
+    size = size >> B_SHIFT;
+    for (q = 0; size; size >>= 1) {
+        q++;
+    }
+    return (1 << (B_SHIFT + q));
 }
 
 /******************************************************************************/

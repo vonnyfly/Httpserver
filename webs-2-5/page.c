@@ -18,7 +18,7 @@
 /********************************* Includes ***********************************/
 
 #include	"wsIntrn.h"
-#define _S_IREAD     0x0100 
+#define _S_IREAD     0x0100
 #undef WIN32
 /*********************************** Code *************************************/
 /*
@@ -28,17 +28,17 @@
 int websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode, int perm)
 {
 #if defined(WIN32)
-	errno_t	err;
+    errno_t	err;
 #endif
-	a_assert(websValid(wp));
+    a_assert(websValid(wp));
 
 #ifdef WEBS_PAGE_ROM
-	return websRomPageOpen(wp, path, mode, perm);
+    return websRomPageOpen(wp, path, mode, perm);
 #elif defined(WIN32)
-	err = _sopen_s(&(wp->docfd), lpath, mode, _SH_DENYNO, _S_IREAD);
-	return (wp->docfd = gopen(lpath, mode, _S_IREAD));
+    err = _sopen_s(&(wp->docfd), lpath, mode, _SH_DENYNO, _S_IREAD);
+    return (wp->docfd = gopen(lpath, mode, _S_IREAD));
 #else
-	return (wp->docfd = gopen(lpath, mode, perm));
+    return (wp->docfd = gopen(lpath, mode, perm));
 #endif /* WEBS_PAGE_ROM */
 }
 
@@ -49,15 +49,15 @@ int websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode, int perm)
 
 void websPageClose(webs_t wp)
 {
-	a_assert(websValid(wp));
+    a_assert(websValid(wp));
 
 #ifdef WEBS_PAGE_ROM
-	websRomPageClose(wp->docfd);
+    websRomPageClose(wp->docfd);
 #else
-	if (wp->docfd >= 0) {
-		close(wp->docfd);
-		wp->docfd = -1;
-	}
+    if (wp->docfd >= 0) {
+        close(wp->docfd);
+        wp->docfd = -1;
+    }
 #endif
 }
 
@@ -69,17 +69,17 @@ void websPageClose(webs_t wp)
 int websPageStat(webs_t wp, char_t *lpath, char_t *path, websStatType* sbuf)
 {
 #ifdef WEBS_PAGE_ROM
-	return websRomPageStat(path, sbuf);
+    return websRomPageStat(path, sbuf);
 #else
-	gstat_t	s;
+    gstat_t	s;
 
-	if (gstat(lpath, &s) < 0) {
-		return -1;
-	}
-	sbuf->size = s.st_size;
-	sbuf->mtime = s.st_mtime;
-	sbuf->isDir = s.st_mode & S_IFDIR;
-	return 0;
+    if (gstat(lpath, &s) < 0) {
+        return -1;
+    }
+    sbuf->size = s.st_size;
+    sbuf->mtime = s.st_mtime;
+    sbuf->isDir = s.st_mode & S_IFDIR;
+    return 0;
 #endif
 }
 
@@ -91,21 +91,21 @@ int websPageStat(webs_t wp, char_t *lpath, char_t *path, websStatType* sbuf)
 int websPageIsDirectory(char_t *lpath)
 {
 #ifdef WEBS_PAGE_ROM
-	websStatType	sbuf;
+    websStatType	sbuf;
 
-	if (websRomPageStat(lpath, &sbuf) >= 0) {
-		return(sbuf.isDir);
-	} else {
-		return 0;
-	}
+    if (websRomPageStat(lpath, &sbuf) >= 0) {
+        return(sbuf.isDir);
+    } else {
+        return 0;
+    }
 #else
-	gstat_t sbuf;
+    gstat_t sbuf;
 
-	if (gstat(lpath, &sbuf) >= 0) {
-		return(sbuf.st_mode & S_IFDIR);
-	} else {
-		return 0;
-	}
+    if (gstat(lpath, &sbuf) >= 0) {
+        return(sbuf.st_mode & S_IFDIR);
+    } else {
+        return 0;
+    }
 #endif
 }
 
@@ -120,11 +120,11 @@ int websPageReadData(webs_t wp, char *buf, int nBytes)
 {
 
 #ifdef WEBS_PAGE_ROM
-	a_assert(websValid(wp));
-	return websRomPageReadData(wp, buf, nBytes);
+    a_assert(websValid(wp));
+    return websRomPageReadData(wp, buf, nBytes);
 #else
-	a_assert(websValid(wp));
-	return read(wp->docfd, buf, nBytes);
+    a_assert(websValid(wp));
+    return read(wp->docfd, buf, nBytes);
 #endif
 }
 
@@ -135,12 +135,12 @@ int websPageReadData(webs_t wp, char *buf, int nBytes)
 
 void websPageSeek(webs_t wp, long offset)
 {
-	a_assert(websValid(wp));
+    a_assert(websValid(wp));
 
 #ifdef WEBS_PAGE_ROM
-	websRomPageSeek(wp, offset, SEEK_CUR);
+    websRomPageSeek(wp, offset, SEEK_CUR);
 #else
-	lseek(wp->docfd, offset, SEEK_CUR);
+    lseek(wp->docfd, offset, SEEK_CUR);
 #endif
 }
 

@@ -480,7 +480,7 @@ int websLaunchCgiProc(char_t *cgiPath, char_t **argp, char_t **envp,
     char_t              *cmdLine;//Add for env
     char_t				**pArgs;
     HANDLE 				hIn;
-	char_t				*envFile;
+    char_t				*envFile;
     /*
      *  Replace directory delimiters with Windows-friendly delimiters
      */
@@ -496,8 +496,8 @@ int websLaunchCgiProc(char_t *cgiPath, char_t **argp, char_t **envp,
 
     //////////////////////////////////////////////
     //create a new file to transfer env vars
-	envFile = websGetCgiCommName();
-	//wprintf(L"envFile:%s\n",envFile);
+    envFile = websGetCgiCommName();
+    //wprintf(L"envFile:%s\n",envFile);
     hIn = CreateFile(envFile,GENERIC_WRITE,FILE_SHARE_WRITE, NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, NULL);
     if(hIn == INVALID_HANDLE_VALUE)
         return -1;
@@ -506,18 +506,18 @@ int websLaunchCgiProc(char_t *cgiPath, char_t **argp, char_t **envp,
     while (pArgs && *pArgs && **pArgs) {
         wprintf(L"%s\n",*pArgs);
         write_data(hIn,L"%s\n",*pArgs);
-        pArgs++;  
+        pArgs++;
     }
     CloseHandle(hIn);
-	
+
     nLen = 0;
-	nLen += gstrlen(envFile) + 1;// add stdIn to stdOut
-	//wprintf(L"------------nLen=%d\n",nLen);
+    nLen += gstrlen(envFile) + 1;// add stdIn to stdOut
+    //wprintf(L"------------nLen=%d\n",nLen);
     nLen += gstrlen(stdIn) + 1;// add stdIn to stdOut
     nLen += gstrlen(stdOut) + 1;// add stdOut to stdOut
-    
+
     cmdLine = balloc(B_L, sizeof(char_t) * nLen);
-	gstrcat(cmdLine, T(" "));
+    gstrcat(cmdLine, T(" "));
     gstrcat(cmdLine, envFile);//vonnyfly:add env to cmdline -3
     //wprintf(L"------------envFile=%s\n",envFile);
     gstrcat(cmdLine, T(" "));
@@ -527,8 +527,8 @@ int websLaunchCgiProc(char_t *cgiPath, char_t **argp, char_t **envp,
     gstrcat(cmdLine, stdOut);//vonnyfly:add stdOut to cmdline -1
     //wprintf(L"------------stdOut=%s\n",stdOut);
     wprintf(L"------------cmdLine=%s\n",cmdLine);
-	wprintf(L"------------argp=%s\n",argp);
-	free(envFile);
+    wprintf(L"------------argp=%s\n",argp);
+    free(envFile);
 
     /*
      *  CreateProcess returns errors sometimes, even when the process was

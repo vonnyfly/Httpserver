@@ -36,22 +36,22 @@ sym_fd_t	romTab;						/* Symbol table for web pages */
 
 int websRomOpen()
 {
-	websRomPageIndexType	*wip;
-	int						nchars;
-	char_t					name[SYM_MAX];
+    websRomPageIndexType	*wip;
+    int						nchars;
+    char_t					name[SYM_MAX];
 
-	romTab = symOpen(WEBS_SYM_INIT);
+    romTab = symOpen(WEBS_SYM_INIT);
 
-	for (wip = websRomPageIndex; wip->path; wip++) {
-		gstrncpy(name, wip->path, SYM_MAX);
-		nchars = gstrlen(name) - 1;
-		if (nchars > 0 &&
-			(name[nchars] == '/' || name[nchars] == '\\')) {
-			name[nchars] = '\0';
-		}
-		symEnter(romTab, name, valueInteger((int) wip), 0);
-	}
-	return 0;
+    for (wip = websRomPageIndex; wip->path; wip++) {
+        gstrncpy(name, wip->path, SYM_MAX);
+        nchars = gstrlen(name) - 1;
+        if (nchars > 0 &&
+            (name[nchars] == '/' || name[nchars] == '\\')) {
+            name[nchars] = '\0';
+        }
+        symEnter(romTab, name, valueInteger((int) wip), 0);
+    }
+    return 0;
 }
 
 /******************************************************************************/
@@ -61,7 +61,7 @@ int websRomOpen()
 
 void websRomClose()
 {
-	symClose(romTab);
+    symClose(romTab);
 }
 
 /******************************************************************************/
@@ -71,18 +71,18 @@ void websRomClose()
 
 int websRomPageOpen(webs_t wp, char_t *path, int mode, int perm)
 {
-	websRomPageIndexType	*wip;
-	sym_t					*sp;
+    websRomPageIndexType	*wip;
+    sym_t					*sp;
 
-	a_assert(websValid(wp));
-	a_assert(path && *path);
+    a_assert(websValid(wp));
+    a_assert(path && *path);
 
-	if ((sp = symLookup(romTab, path)) == NULL) {
-		return -1;
-	}
-	wip = (websRomPageIndexType*) sp->content.value.integer;
-	wip->pos = 0;
-	return (wp->docfd = wip - websRomPageIndex);
+    if ((sp = symLookup(romTab, path)) == NULL) {
+        return -1;
+    }
+    wip = (websRomPageIndexType*) sp->content.value.integer;
+    wip->pos = 0;
+    return (wp->docfd = wip - websRomPageIndex);
 }
 
 /******************************************************************************/
@@ -101,22 +101,22 @@ void websRomPageClose(int fd)
 
 int websRomPageStat(char_t *path, websStatType *sbuf)
 {
-	websRomPageIndexType	*wip;
-	sym_t					*sp;
+    websRomPageIndexType	*wip;
+    sym_t					*sp;
 
-	a_assert(path && *path);
+    a_assert(path && *path);
 
-	if ((sp = symLookup(romTab, path)) == NULL) {
-		return -1;
-	}
-	wip = (websRomPageIndexType*) sp->content.value.integer;
+    if ((sp = symLookup(romTab, path)) == NULL) {
+        return -1;
+    }
+    wip = (websRomPageIndexType*) sp->content.value.integer;
 
-	memset(sbuf, 0, sizeof(websStatType));
-	sbuf->size = wip->size;
-	if (wip->page == NULL) {
-		sbuf->isDir = 1;
-	}
-	return 0;
+    memset(sbuf, 0, sizeof(websStatType));
+    sbuf->size = wip->size;
+    if (wip->page == NULL) {
+        sbuf->isDir = 1;
+    }
+    return 0;
 }
 
 /******************************************************************************/
@@ -126,19 +126,19 @@ int websRomPageStat(char_t *path, websStatType *sbuf)
 
 int websRomPageReadData(webs_t wp, char *buf, int nBytes)
 {
-	websRomPageIndexType	*wip;
-	int						len;
+    websRomPageIndexType	*wip;
+    int						len;
 
-	a_assert(websValid(wp));
-	a_assert(buf);
-	a_assert(wp->docfd >= 0);
+    a_assert(websValid(wp));
+    a_assert(buf);
+    a_assert(wp->docfd >= 0);
 
-	wip = &websRomPageIndex[wp->docfd];
+    wip = &websRomPageIndex[wp->docfd];
 
-	len = min(wip->size - wip->pos, nBytes);
-	memcpy(buf, &wip->page[wip->pos], len);
-	wip->pos += len;
-	return len;
+    len = min(wip->size - wip->pos, nBytes);
+    memcpy(buf, &wip->page[wip->pos], len);
+    wip->pos += len;
+    return len;
 }
 
 /******************************************************************************/
@@ -148,43 +148,43 @@ int websRomPageReadData(webs_t wp, char *buf, int nBytes)
 
 long websRomPageSeek(webs_t wp, long offset, int origin)
 {
-	websRomPageIndexType	*wip;
-	long pos;
+    websRomPageIndexType	*wip;
+    long pos;
 
-	a_assert(websValid(wp));
-	a_assert(origin == SEEK_SET || origin == SEEK_CUR || origin == SEEK_END);
-	a_assert(wp->docfd >= 0);
+    a_assert(websValid(wp));
+    a_assert(origin == SEEK_SET || origin == SEEK_CUR || origin == SEEK_END);
+    a_assert(wp->docfd >= 0);
 
-	wip = &websRomPageIndex[wp->docfd];
+    wip = &websRomPageIndex[wp->docfd];
 
-	if (origin != SEEK_SET && origin != SEEK_CUR && origin != SEEK_END) {
-		errno = EINVAL;
-		return -1;
-	}
+    if (origin != SEEK_SET && origin != SEEK_CUR && origin != SEEK_END) {
+        errno = EINVAL;
+        return -1;
+    }
 
-	if (wp->docfd < 0) {
-		errno = EBADF;
-		return -1;
-	}
+    if (wp->docfd < 0) {
+        errno = EBADF;
+        return -1;
+    }
 
-	pos = offset;
-	switch (origin) {
-	case SEEK_CUR:
-		pos = wip->pos + offset;
-		break;
-	case SEEK_END:
-		pos = wip->size + offset;
-		break;
-	default:
-		break;
-	}
+    pos = offset;
+    switch (origin) {
+    case SEEK_CUR:
+        pos = wip->pos + offset;
+        break;
+    case SEEK_END:
+        pos = wip->size + offset;
+        break;
+    default:
+        break;
+    }
 
-	if (pos < 0) {
-		errno = EBADF;
-		return -1;
-	}
+    if (pos < 0) {
+        errno = EBADF;
+        return -1;
+    }
 
-	return (wip->pos = pos);
+    return (wip->pos = pos);
 }
 
 #endif /* WEBS_PAGE_ROM */

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Production>
+    <text x="400" y="20">value1</text>
+    <text x="0" y="40">value2</text>
+    <text x="400" y="60">value3</text>
+    <text x="0" y="80">value4</text>
+    <text x="400" y="100">value5</text>
+    <text x="0" y="120">value6</text>
+</Production>

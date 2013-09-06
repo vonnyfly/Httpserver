@@ -1,4 +1,4 @@
-/* 
+/*
  *	ejIntrn.h -- Ejscript(TM) header
  *
  *	Copyright (c) GoAhead Software, Inc., 1992-2010
@@ -12,7 +12,7 @@
 
 /******************************** Description *********************************/
 
-/* 
+/*
  *	GoAhead Ejscript(TM) header. This defines the Ejscript API and internal
  *	structures.
  */
@@ -24,15 +24,15 @@
 #include	<stdlib.h>
 
 #ifdef WIN32
-	#include	"share.h"
+#include	"share.h"
 #endif
 
 #ifdef LYNX
-	#include	<unistd.h>
+#include	<unistd.h>
 #endif
 
 #ifdef QNX4
-	#include	<dirent.h>
+#include	<dirent.h>
 #endif
 
 #include	"uemf.h"
@@ -135,41 +135,41 @@
  *	Function call structure
  */
 typedef struct {
-	char_t		*fname;							/* Function name */
-	char_t		**args;							/* Args for function (halloc) */
-	int			nArgs;							/* Number of args */
+    char_t		*fname;							/* Function name */
+    char_t		**args;							/* Args for function (halloc) */
+    int			nArgs;							/* Number of args */
 } ejfunc_t;
 
 /*
  *	EJ evaluation block structure
  */
 typedef struct ejEval {
-	ringq_t		tokbuf;							/* Current token */
-	ringq_t		script;							/* Input script for parsing */
-	char_t		*putBackToken;					/* Putback token string */
-	int			putBackTokenId;					/* Putback token ID */
-	char_t		*line;							/* Current line */
-	int			lineLength;						/* Current line length */
-	int			lineNumber;						/* Parse line number */
-	int			lineColumn;						/* Column in line */
+    ringq_t		tokbuf;							/* Current token */
+    ringq_t		script;							/* Input script for parsing */
+    char_t		*putBackToken;					/* Putback token string */
+    int			putBackTokenId;					/* Putback token ID */
+    char_t		*line;							/* Current line */
+    int			lineLength;						/* Current line length */
+    int			lineNumber;						/* Parse line number */
+    int			lineColumn;						/* Column in line */
 } ejinput_t;
 
 /*
  *	Per Ejscript session structure
  */
 typedef struct ej {
-	ejinput_t	*input;							/* Input evaluation block */
-	sym_fd_t	functions;						/* Symbol table for functions */
-	sym_fd_t	*variables;						/* hAlloc list of variables */
-	int			variableMax;					/* Number of entries */
-	ejfunc_t	*func;							/* Current function */
-	char_t		*result;						/* Current expression result */
-	char_t		*error;							/* Error message */
-	char_t		*token;							/* Pointer to token string */
-	int			tid;							/* Current token id */
-	int			eid;							/* Halloc handle */
-	int			flags;							/* Flags */
-	void		*userHandle;					/* User defined handle */
+    ejinput_t	*input;							/* Input evaluation block */
+    sym_fd_t	functions;						/* Symbol table for functions */
+    sym_fd_t	*variables;						/* hAlloc list of variables */
+    int			variableMax;					/* Number of entries */
+    ejfunc_t	*func;							/* Current function */
+    char_t		*result;						/* Current expression result */
+    char_t		*error;							/* Error message */
+    char_t		*token;							/* Pointer to token string */
+    int			tid;							/* Current token id */
+    int			eid;							/* Halloc handle */
+    int			flags;							/* Flags */
+    void		*userHandle;					/* User defined handle */
 } ej_t;
 
 /******************************** Prototypes **********************************/
@@ -182,8 +182,8 @@ extern char_t	*ejEvalFile(int eid, char_t *path, char_t **emsg);
 #endif
 extern int		ejRemoveGlobalFunction(int eid, char_t *name);
 extern void		*ejGetGlobalFunction(int eid, char_t *name);
-extern int 		ejSetGlobalFunctionDirect(sym_fd_t functions, char_t *name, 
-					int (*fn)(int eid, void *handle, int argc, char_t **argv));
+extern int 		ejSetGlobalFunctionDirect(sym_fd_t functions, char_t *name,
+        int (*fn)(int eid, void *handle, int argc, char_t **argv));
 extern void 	ejError(ej_t* ep, char_t* fmt, ...);
 extern void		ejSetUserHandle(int eid, void* handle);
 extern void		*ejGetUserHandle(int eid);

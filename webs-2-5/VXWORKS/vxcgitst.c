@@ -3,6 +3,6 @@
 
 void vxcgitst_cgientry(int argc, char **argv)
 {
-printf("\r\n");
-envShow(NULL);
+    printf("\r\n");
+    envShow(NULL);
 }

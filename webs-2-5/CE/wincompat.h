@@ -89,7 +89,7 @@ int _wchdir(unsigned short* path);
 int _wexecvp(unsigned short *path, unsigned short** argv);
 int umask(int mode);
 #if 0
-/* 10 Apr 03 BgP -- CE.NET work. The following functions are now directly supported by CE, 
+/* 10 Apr 03 BgP -- CE.NET work. The following functions are now directly supported by CE,
    so we do not need these compatibility versions.
 */
 int	isupper(int c);
@@ -104,16 +104,16 @@ int isxdigit(int c);
  */
 struct _stat {
 #if 0
-	unsigned long st_size;	/* file size in bytes				*/
-	unsigned long st_mode;
+    unsigned long st_size;	/* file size in bytes				*/
+    unsigned long st_mode;
 #else
-   /* 11 Apr 03 BgP -- fixing an unsigned/signed comparison error */
-	long st_size;	/* file size in bytes				*/
-	long st_mode;
+    /* 11 Apr 03 BgP -- fixing an unsigned/signed comparison error */
+    long st_size;	/* file size in bytes				*/
+    long st_mode;
 #endif
-	time_t st_atime;		/* time of last access				*/
-	time_t st_mtime;		/* time of last data modification	*/
-	time_t st_ctime;		/* time of last file status change	*/
+    time_t st_atime;		/* time of last access				*/
+    time_t st_mtime;		/* time of last data modification	*/
+    time_t st_ctime;		/* time of last file status change	*/
 };
 
 #define         S_IFREG 0100000
@@ -137,20 +137,19 @@ extern int errno;
 /*
  * the following replaces time.h
  */
-struct tm
-{
-	int tm_sec;
-	int tm_min;
-	int tm_hour;
-	int tm_mday;
-	int tm_mon;
-	int tm_year;
-	int tm_wday;
-	int tm_yday;
-	int tm_isdst;
+struct tm {
+    int tm_sec;
+    int tm_min;
+    int tm_hour;
+    int tm_mday;
+    int tm_mon;
+    int tm_year;
+    int tm_wday;
+    int tm_yday;
+    int tm_isdst;
 #define LTZNMAX 50
-	long tm_tzadj;
-	char tm_name[LTZNMAX];	/* name of timezone	*/
+    long tm_tzadj;
+    char tm_name[LTZNMAX];	/* name of timezone	*/
 };
 
 
@@ -164,10 +163,10 @@ extern unsigned short *_wasctime(const struct tm *timeptr);
  */
 struct timeb {
 
-	time_t time;			/* time, seconds since the epoch */
-	unsigned short millitm;	/* 1000 msec of additional accuracy */
-	short timezone;			/* timezone, minutes west of GMT */
-	short dstflag;			/* daylight savings */
+    time_t time;			/* time, seconds since the epoch */
+    unsigned short millitm;	/* 1000 msec of additional accuracy */
+    short timezone;			/* timezone, minutes west of GMT */
+    short dstflag;			/* daylight savings */
 };
 
 extern void ftime(struct timeb* tp);

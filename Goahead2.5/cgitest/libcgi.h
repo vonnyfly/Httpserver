@@ -32,10 +32,14 @@ extern char_t* getCgiDataWithMalloc(int *len);
 extern void freeCgiDataWithMalloc(char_t *pData);
 
 extern  void hexdump(const void *_data, unsigned len);
+extern char *str_replace(char *orig, char *rep, char *with);
 
-extern char* UnicodeToAnsi( const wchar_t* szStr );
 extern HRESULT __fastcall AnsiToUnicode(LPCSTR pszA, wchar_t** ppszW);
 extern HRESULT __fastcall UnicodeToAnsi2(wchar_t* pszW, LPSTR* ppszA);
+extern char* UnicodeToAnsi( const wchar_t* szStr );
+
+extern BOOL UrlEncode(const char* szSrc, char* pBuf, int cbBufLen, BOOL bUpperCase);
+extern BOOL UrlDecode(const char* szSrc, char* pBuf, int cbBufLen);
 
 extern void UTF8ToGBK(const char *szOut, char** out);
 #ifdef __cplusplus

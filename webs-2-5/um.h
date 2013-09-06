@@ -58,11 +58,11 @@ typedef short bool_t;
 #endif
 
 typedef enum {
-	AM_NONE = 0,
-	AM_FULL,
-	AM_BASIC,
-	AM_DIGEST,
-	AM_INVALID
+    AM_NONE = 0,
+    AM_FULL,
+    AM_BASIC,
+    AM_DIGEST,
+    AM_INVALID
 } accessMeth_t;
 
 /********************************** Prototypes ********************************/
@@ -91,7 +91,7 @@ extern int				umRestore(char_t *filename);
  *	umUser functions use a user ID for a key
  */
 extern int				umAddUser(char_t *user, char_t *password,
-							char_t *group, bool_t protect, bool_t disabled);
+                                  char_t *group, bool_t protect, bool_t disabled);
 
 extern int				umDeleteUser(char_t *user);
 
@@ -116,7 +116,7 @@ extern int				umSetUserProtected(char_t *user, bool_t protect);
  *	umGroup functions use a group name for a key
  */
 extern int				umAddGroup(char_t *group, short privilege,
-							accessMeth_t am, bool_t protect, bool_t disabled);
+                                   accessMeth_t am, bool_t protect, bool_t disabled);
 
 extern int				umDeleteGroup(char_t *group);
 
@@ -142,7 +142,7 @@ extern int				umSetGroupProtected(char_t *group, bool_t protect);
  *	umAccessLimit functions use a URL as a key
  */
 extern int			umAddAccessLimit(char_t *url, accessMeth_t am,
-						short secure, char_t *group);
+                                     short secure, char_t *group);
 
 extern int			umDeleteAccessLimit(char_t *url);
 

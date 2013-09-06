@@ -632,16 +632,16 @@ char *ballocUniToAsc(char_t *unip, int ulen)
     uniToAsc(cp, unip, ulen);
     cp[ulen] = '\0';
     return cp;
-	
+
 #else
     char *cp;
     int n_len = WideCharToMultiByte(CP_ACP,NULL,unip,-1,NULL,0,NULL,NULL);
-        if ((cp = balloc(B_L, n_len+1)) == NULL) {
+    if ((cp = balloc(B_L, n_len+1)) == NULL) {
         return NULL;
     }
     WideCharToMultiByte(CP_ACP,NULL,unip,-1,cp,n_len,NULL,NULL);  //¿ªÊ¼×ª»»
     cp[n_len] = '\0';
-	//wprintf(L"n_len=%d,strlen=%d\n",n_len,strlen(cp));
+    //wprintf(L"n_len=%d,strlen=%d\n",n_len,strlen(cp));
     return cp;
 #endif
 

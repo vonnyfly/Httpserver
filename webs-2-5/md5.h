@@ -28,7 +28,7 @@ typedef psDigestContext_t	psMd5Context_t;
 
 extern void psMd5Init(psMd5Context_t *md);
 extern void psMd5Update(psMd5Context_t *md, unsigned char *buf,
-			unsigned int len);
+                        unsigned int len);
 extern int	psMd5Final(psMd5Context_t *md, unsigned char *hash);
 
 /* Uncomment below for old API Compatibility */

@@ -11,102 +11,100 @@ int Save16BitmapToFile(HBITMAP hBitmap,LPCTSTR lpFileName);
 
 HBITMAP CopyScreenToBitmap(int* nWidth,int* nHeight)
 {
- 
+
     // 屏幕和内存设备描述表
-     HDC  hScrDC, hMemDC;      
+    HDC  hScrDC, hMemDC;
     // 位图句柄
-     HBITMAP  hBitmap, hOldBitmap;    
+    HBITMAP  hBitmap, hOldBitmap;
     // 屏幕分辨率
-     int  xScrn, yScrn;         
-    
+    int  xScrn, yScrn;
+
     //为屏幕创建设备描述表
-     hScrDC = CreateDC(_T("DISPLAY"), NULL, NULL, NULL);
-     //为屏幕设备描述表创建兼容的内存设备描述表
-     hMemDC = CreateCompatibleDC(hScrDC);
-     // 获得屏幕分辨率
-     xScrn = GetDeviceCaps(hScrDC, HORZRES);
- 
+    hScrDC = CreateDC(_T("DISPLAY"), NULL, NULL, NULL);
+    //为屏幕设备描述表创建兼容的内存设备描述表
+    hMemDC = CreateCompatibleDC(hScrDC);
+    // 获得屏幕分辨率
+    xScrn = GetDeviceCaps(hScrDC, HORZRES);
+
     yScrn= GetDeviceCaps(hScrDC, VERTRES);
- 
+
     //存储屏幕的长宽
-     *nWidth = xScrn;
-     *nHeight = yScrn;
-     
+    *nWidth = xScrn;
+    *nHeight = yScrn;
+
     // 创建一个与屏幕设备描述表兼容的位图
-     hBitmap = CreateCompatibleBitmap(hScrDC, xScrn, yScrn);
-     // 把新位图选到内存设备描述表中
-     hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
-     // 把屏幕设备描述表拷贝到内存设备描述表中
-     BitBlt(hMemDC, 0, 0, xScrn,yScrn,hScrDC, 0, 0, SRCCOPY);
-     //得到屏幕位图的句柄
-     hBitmap = (HBITMAP)SelectObject(hMemDC, hOldBitmap);
-     //清除 
+    hBitmap = CreateCompatibleBitmap(hScrDC, xScrn, yScrn);
+    // 把新位图选到内存设备描述表中
+    hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+    // 把屏幕设备描述表拷贝到内存设备描述表中
+    BitBlt(hMemDC, 0, 0, xScrn,yScrn,hScrDC, 0, 0, SRCCOPY);
+    //得到屏幕位图的句柄
+    hBitmap = (HBITMAP)SelectObject(hMemDC, hOldBitmap);
+    //清除
     DeleteDC(hScrDC);
     DeleteDC(hMemDC);
-     // 返回位图句柄
-     return hBitmap;
- }
+    // 返回位图句柄
+    return hBitmap;
+}
 
 
-  int Save16BitmapToFile(HBITMAP hBitmap,LPCTSTR lpFileName)//将截屏所得保存为16位的图片
- {
-     
+int Save16BitmapToFile(HBITMAP hBitmap,LPCTSTR lpFileName)//将截屏所得保存为16位的图片
+{
+
 
     HDC hDC=CreateDC(TEXT("DISPLAY"),NULL,NULL,NULL);
-     HDC hOffDC=CreateCompatibleDC(hDC);
-     SelectObject(hOffDC,hBitmap);
-     
+    HDC hOffDC=CreateCompatibleDC(hDC);
+    SelectObject(hOffDC,hBitmap);
+
     BITMAP Bitmap;
-     GetObject(hBitmap,sizeof(BITMAP),&Bitmap);
-     
+    GetObject(hBitmap,sizeof(BITMAP),&Bitmap);
+
     HANDLE fh=CreateFile(lpFileName,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,
-         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,NULL);
-     if(fh == INVALID_HANDLE_VALUE )
-         return FALSE;
- 
+                         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,NULL);
+    if(fh == INVALID_HANDLE_VALUE )
+        return FALSE;
+
     BITMAPFILEHEADER bfh;
-     memset(&bfh,0,sizeof(bfh));
-     bfh.bfType=0x4D42/*((WORD) ('M' << 8) | 'B')*/;
-     bfh.bfSize= sizeof(bfh)+2*Bitmap.bmWidth*Bitmap.bmHeight+sizeof(BITMAPFILEHEADER);
-     bfh.bfOffBits=sizeof(BITMAPINFOHEADER)+sizeof(BITMAPFILEHEADER);
-     DWORD dwWritten=0;
-     WriteFile(fh,&bfh,sizeof(bfh),&dwWritten,NULL);
-     BITMAPINFOHEADER bih;
-     memset(&bih,0,sizeof(bih));
-     bih.biSize=sizeof(bih);
-     bih.biWidth=Bitmap.bmWidth;
-     bih.biHeight=Bitmap.bmHeight;
-     bih.biPlanes=1;
-     bih.biBitCount=16;
- 
-    if( !WriteFile(fh,&bih,sizeof(bih),&dwWritten,NULL) )
-     {
-         return FALSE;
-     }
-     
+    memset(&bfh,0,sizeof(bfh));
+    bfh.bfType=0x4D42/*((WORD) ('M' << 8) | 'B')*/;
+    bfh.bfSize= sizeof(bfh)+2*Bitmap.bmWidth*Bitmap.bmHeight+sizeof(BITMAPFILEHEADER);
+    bfh.bfOffBits=sizeof(BITMAPINFOHEADER)+sizeof(BITMAPFILEHEADER);
+    DWORD dwWritten=0;
+    WriteFile(fh,&bfh,sizeof(bfh),&dwWritten,NULL);
+    BITMAPINFOHEADER bih;
+    memset(&bih,0,sizeof(bih));
+    bih.biSize=sizeof(bih);
+    bih.biWidth=Bitmap.bmWidth;
+    bih.biHeight=Bitmap.bmHeight;
+    bih.biPlanes=1;
+    bih.biBitCount=16;
+
+    if( !WriteFile(fh,&bih,sizeof(bih),&dwWritten,NULL) ) {
+        return FALSE;
+    }
+
     BITMAPINFO bitmapInfo;
-     memset((void *)&bitmapInfo,0,sizeof(BITMAPINFO) );
-     bitmapInfo.bmiHeader=bih;
- 
-    HDC hMemDC=CreateCompatibleDC(hDC);    
+    memset((void *)&bitmapInfo,0,sizeof(BITMAPINFO) );
+    bitmapInfo.bmiHeader=bih;
+
+    HDC hMemDC=CreateCompatibleDC(hDC);
     BYTE *m_lpBitBmp=new BYTE[bfh.bfSize-sizeof(BITMAPFILEHEADER)];
-     HBITMAP hDibBitmap=CreateDIBSection(hMemDC,&bitmapInfo,DIB_RGB_COLORS,(void **)&m_lpBitBmp,
-         NULL,0);
-     if(hDibBitmap != 0)
-     {
-         ::SelectObject(hMemDC,hDibBitmap);
-         BitBlt(hMemDC,0,0,Bitmap.bmWidth,Bitmap.bmHeight,hOffDC,0,0,SRCCOPY);
-         WriteFile(fh,m_lpBitBmp,bfh.bfSize-sizeof(BITMAPFILEHEADER),&dwWritten,NULL);
-     }
-     
+    HBITMAP hDibBitmap=CreateDIBSection(hMemDC,&bitmapInfo,DIB_RGB_COLORS,(void **)&m_lpBitBmp,
+                                        NULL,0);
+    if(hDibBitmap != 0) {
+        ::SelectObject(hMemDC,hDibBitmap);
+        BitBlt(hMemDC,0,0,Bitmap.bmWidth,Bitmap.bmHeight,hOffDC,0,0,SRCCOPY);
+        WriteFile(fh,m_lpBitBmp,bfh.bfSize-sizeof(BITMAPFILEHEADER),&dwWritten,NULL);
+    }
+
     DeleteObject(hDibBitmap);
-     DeleteDC(hDC);
-     DeleteDC(hMemDC);
- 
+    DeleteDC(hDC);
+    DeleteDC(hMemDC);
+
     CloseHandle(fh);
- 
+
     return 1;
- 
+
 }
 
 #endif
@@ -116,7 +114,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 #if CGI
     char_t buf[256];
-	int nread = 0;
+    int nread = 0;
 //初始化，必须调用
     if(init(argc, argv)<0) {
         wprintf(L"[-] cgi file open failed\n");
@@ -158,24 +156,24 @@ int _tmain(int argc, _TCHAR* argv[])
     write_data(L"<P>SERVER ADDR = %s</P>\n", gogetenv(L"SERVER_ADDR",buf));
     write_data(L"<P>SERVER URL = %s</P>\n", gogetenv(L"SERVER_URL",buf));
     write_data(L"<P>SERVER SOFTWARE = %s</P>\n", gogetenv(L"SERVER_SOFTWARE",buf));
-	write_data(L"<P>CGI_Data = %s</P>\n", getCgiData(buf,sizeof(buf),&nread));
-	write_data(L"<P>CGI_Size = %d</P>\n", nread);
-	write_data(L"<P>out = %s</P>\n", argv[argc-1]);
-	write_data(L"<P>in = %s</P>\n", argv[argc-2]);
-	write_data(L"<P>env = %s</P>\n", argv[argc-3]);
-	
-#endif
-	
-#if 0	
-	int 	nWidth,nHeight;
-	HBITMAP MyhBitmap;
+    write_data(L"<P>CGI_Data = %s</P>\n", getCgiData(buf,sizeof(buf),&nread));
+    write_data(L"<P>CGI_Size = %d</P>\n", nread);
+    write_data(L"<P>out = %s</P>\n", argv[argc-1]);
+    write_data(L"<P>in = %s</P>\n", argv[argc-2]);
+    write_data(L"<P>env = %s</P>\n", argv[argc-3]);
 
-	MyhBitmap = CopyScreenToBitmap(&nWidth, &nHeight );
-	wprintf(L"width=%d\t,height=%d\n",nWidth, nHeight);
-	//Save16BitmapToFile( MyhBitmap, L"\\NandFlash\\go.bmp");
-	Save16BitmapToFile( MyhBitmap, L"go.bmp");
-	wprintf(L"xxxxxxxxxxx");
-	
+#endif
+
+#if 0
+    int 	nWidth,nHeight;
+    HBITMAP MyhBitmap;
+
+    MyhBitmap = CopyScreenToBitmap(&nWidth, &nHeight );
+    wprintf(L"width=%d\t,height=%d\n",nWidth, nHeight);
+    //Save16BitmapToFile( MyhBitmap, L"\\NandFlash\\go.bmp");
+    Save16BitmapToFile( MyhBitmap, L"go.bmp");
+    wprintf(L"xxxxxxxxxxx");
+
 #endif
 #if CGI
 //销毁资源

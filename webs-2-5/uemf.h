@@ -13,144 +13,144 @@
 
 /******************************** Description *********************************/
 
-/* 
+/*
  *	GoAhead Web Server header. This defines the Web public APIs
  */
 
 /******************************* Per O/S Includes *****************************/
 
 #ifdef WIN
-	#include	<direct.h>
-	#include	<io.h>
-	#include	<sys/stat.h>
-	#include	<limits.h>
-	#include	<tchar.h>
-	#include	<windows.h>
-	#include	<winnls.h>
-	#include	<time.h>
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
+#include	<direct.h>
+#include	<io.h>
+#include	<sys/stat.h>
+#include	<limits.h>
+#include	<tchar.h>
+#include	<windows.h>
+#include	<winnls.h>
+#include	<time.h>
+#include	<sys/types.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #endif /* WIN */
 
 #ifdef CE
-	/*#include	<errno.h>*/
-	#include	<limits.h>
-	#include	<tchar.h>
-	#include	<windows.h>
-	#include	<winsock.h>
-	#include	<winnls.h>
-	#include	"CE/wincompat.h"
-	#include	<winsock.h>
+/*#include	<errno.h>*/
+#include	<limits.h>
+#include	<tchar.h>
+#include	<windows.h>
+#include	<winsock.h>
+#include	<winnls.h>
+#include	"CE/wincompat.h"
+#include	<winsock.h>
 #endif /* CE */
 
 #ifdef NW
-	#include	<direct.h>
-	#include	<io.h>
-	#include	<sys/stat.h>
-	#include	<time.h>
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-	#include	<niterror.h>
-	#define		EINTR EINUSE
-	#define		 WEBS	1
-	#include	<limits.h>
-	#include	<netdb.h>
-	#include	<process.h>
-	#include	<tiuser.h>
-	#include	<sys/time.h>
-	#include	<arpa/inet.h>
-	#include	<sys/types.h>
-	#include	<sys/socket.h>
-	#include	<sys/filio.h>
-	#include	<netinet/in.h>
+#include	<direct.h>
+#include	<io.h>
+#include	<sys/stat.h>
+#include	<time.h>
+#include	<sys/types.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<fcntl.h>
+#include	<errno.h>
+#include	<niterror.h>
+#define		EINTR EINUSE
+#define		 WEBS	1
+#include	<limits.h>
+#include	<netdb.h>
+#include	<process.h>
+#include	<tiuser.h>
+#include	<sys/time.h>
+#include	<arpa/inet.h>
+#include	<sys/types.h>
+#include	<sys/socket.h>
+#include	<sys/filio.h>
+#include	<netinet/in.h>
 #endif /* NW */
 
-#ifdef SCOV5 
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	"sys/socket.h"
-	#include	"sys/select.h"
-	#include	"netinet/in.h"
-	#include 	"arpa/inet.h"
-	#include 	"netdb.h"
+#ifdef SCOV5
+#include	<sys/types.h>
+#include	<stdio.h>
+#include	"sys/socket.h"
+#include	"sys/select.h"
+#include	"netinet/in.h"
+#include 	"arpa/inet.h"
+#include 	"netdb.h"
 #endif /* SCOV5 */
 
 #ifdef UNIX
-	#include	<stdio.h>
+#include	<stdio.h>
 #endif /* UNIX */
 
 #ifdef LINUX
-	#include	<sys/types.h>
-	#include	<sys/stat.h>
-	#include	<sys/param.h>
-	#include	<limits.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<sys/socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
+#include	<sys/types.h>
+#include	<sys/stat.h>
+#include	<sys/param.h>
+#include	<limits.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<unistd.h>
+#include	<sys/socket.h>
+#include	<sys/select.h>
+#include	<netinet/in.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include	<time.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #endif /* LINUX */
 
 #ifdef LYNX
-	#include	<limits.h>
-	#include	<stdarg.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<socket.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
+#include	<limits.h>
+#include	<stdarg.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<unistd.h>
+#include	<socket.h>
+#include	<netinet/in.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include	<time.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #endif /* LYNX */
 
 #ifdef MACOSX
-	#include	<limits.h>
-	#include	<sys/select.h>
-	#include	<sys/types.h>
-	#include	<sys/stat.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<sys/socket.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
-	#include	<time.h>
+#include	<limits.h>
+#include	<sys/select.h>
+#include	<sys/types.h>
+#include	<sys/stat.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<unistd.h>
+#include	<sys/socket.h>
+#include	<netinet/in.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include	<fcntl.h>
+#include	<errno.h>
+#include	<time.h>
 #endif /* MACOSX */
 
 #ifdef UW
-	#include	<stdio.h>
+#include	<stdio.h>
 #endif /* UW */
 
 #ifdef VXWORKS
-	#include	<vxWorks.h>
-	#include	<sockLib.h>
-	#include	<selectLib.h>
-	#include	<inetLib.h>
-	#include	<ioLib.h>
-	#include	<stdio.h>
-	#include	<stat.h>
-	#include	<time.h>
-	#include	<usrLib.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
+#include	<vxWorks.h>
+#include	<sockLib.h>
+#include	<selectLib.h>
+#include	<inetLib.h>
+#include	<ioLib.h>
+#include	<stdio.h>
+#include	<stat.h>
+#include	<time.h>
+#include	<usrLib.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #endif /* VXWORKS */
 
 #ifdef sparc
@@ -158,42 +158,42 @@
 #endif /* sparc */
 
 #ifdef SOLARIS
-	#include	<sys/types.h>
-	#include	<limits.h>
-	#include	<stdio.h>
-	#include	<stdlib.h>
-	#include	<unistd.h>
-	#include	<socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-	#include	<time.h>
-	#include	<fcntl.h>
-	#include	<errno.h>
+#include	<sys/types.h>
+#include	<limits.h>
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<unistd.h>
+#include	<socket.h>
+#include	<sys/select.h>
+#include	<netinet/in.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include	<time.h>
+#include	<fcntl.h>
+#include	<errno.h>
 #endif /* SOLARIS */
 
 #ifdef QNX4
-	#include	<sys/types.h>
-	#include	<stdio.h>
-	#include	<sys/socket.h>
-	#include	<sys/select.h>
-	#include	<netinet/in.h>
-	#include 	<arpa/inet.h>
-	#include 	<netdb.h>
-    #include    <stdlib.h>
-    #include    <unistd.h>
-    #include    <sys/uio.h>
-    #include    <sys/wait.h>
+#include	<sys/types.h>
+#include	<stdio.h>
+#include	<sys/socket.h>
+#include	<sys/select.h>
+#include	<netinet/in.h>
+#include 	<arpa/inet.h>
+#include 	<netdb.h>
+#include    <stdlib.h>
+#include    <unistd.h>
+#include    <sys/uio.h>
+#include    <sys/wait.h>
 #endif /* QNX4 */
 
 #ifdef ECOS
-	#include	<limits.h>
-	#include	<cyg/infra/cyg_type.h>
-	#include	<cyg/kernel/kapi.h>
-	#include	<time.h>
-	#include	<network.h>
-	#include	<errno.h>
+#include	<limits.h>
+#include	<cyg/infra/cyg_type.h>
+#include	<cyg/kernel/kapi.h>
+#include	<time.h>
+#include	<network.h>
+#include	<errno.h>
 #endif /* ECOS */
 
 /********************************** Includes **********************************/
@@ -209,7 +209,7 @@
 /******************************* Per O/S Defines *****************************/
 
 #ifdef UW
-	#define		__NO_PACK		1
+#define		__NO_PACK		1
 #endif /* UW */
 
 #if (defined (SCOV5) || defined (VXWORKS) || defined (LINUX) || defined (LYNX) || defined (MACOSX))
@@ -239,59 +239,58 @@ typedef int socklen_t;
 #endif /* WIN || CE */
 
 #if (defined (LINUX) && !defined (_STRUCT_TIMEVAL))
-struct timeval
-{
-	time_t	tv_sec;		/* Seconds.  */
-	time_t	tv_usec;	/* Microseconds.  */
+struct timeval {
+    time_t	tv_sec;		/* Seconds.  */
+    time_t	tv_usec;	/* Microseconds.  */
 };
 #define _STRUCT_TIMEVAL 1
 #endif /* LINUX && ! _STRUCT_TIMEVAL */
 
 #ifdef ECOS
-	#define		O_RDONLY		1
-	#define		O_BINARY		2
+#define		O_RDONLY		1
+#define		O_BINARY		2
 
-	#define		__NO_PACK		1
-	#define		__NO_EJ_FILE	1
-	#define		__NO_CGI_BIN	1
-	#define		__NO_FCNTL		1
+#define		__NO_PACK		1
+#define		__NO_EJ_FILE	1
+#define		__NO_CGI_BIN	1
+#define		__NO_FCNTL		1
 
 /*
  *	#define LIBKERN_INLINE to avoid kernel inline functions
  */
-	#define		LIBKERN_INLINE
+#define		LIBKERN_INLINE
 
 #endif /* ECOS */
 
 #ifdef QNX4
-    typedef long        fd_mask;
-    #define NFDBITS (sizeof (fd_mask) * NBBY)   /* bits per mask */
+typedef long        fd_mask;
+#define NFDBITS (sizeof (fd_mask) * NBBY)   /* bits per mask */
 #endif /* QNX4 */
 
 #ifdef MACOSX
-	typedef int32_t			fd_mask;
+typedef int32_t			fd_mask;
 #endif
 
 #ifdef NW
-	#define fd_mask			fd_set
-	#define INADDR_NONE		-1l
-	#define Sleep			delay
+#define fd_mask			fd_set
+#define INADDR_NONE		-1l
+#define Sleep			delay
 
-	#define __NO_FCNTL		1
+#define __NO_FCNTL		1
 
-	#undef R_OK
-	#define R_OK    4
-	#undef W_OK
-	#define W_OK    2
-	#undef X_OK
-	#define X_OK    1
-	#undef F_OK
-	#define F_OK    0
+#undef R_OK
+#define R_OK    4
+#undef W_OK
+#define W_OK    2
+#undef X_OK
+#define X_OK    1
+#undef F_OK
+#define F_OK    0
 #endif /* NW */
 
 /********************************** Unicode ***********************************/
-/* 
- *	Constants and limits. Also FNAMESIZE and PATHSIZE are currently defined 
+/*
+ *	Constants and limits. Also FNAMESIZE and PATHSIZE are currently defined
  *	in param.h to be 128 and 512
  */
 #define TRACE_MAX			(4096 - 48)
@@ -311,7 +310,7 @@ struct timeval
 #define	LF_BUF_MAX		BUF_MAX
 #define LF_PATHSIZE		PATHSIZE
 #define UPPATHSIZE		PATHSIZE
-#endif /* LITTLEFOOT || WEBS */ 
+#endif /* LITTLEFOOT || WEBS */
 #ifndef CHAR_T_DEFINED
 #define CHAR_T_DEFINED 1
 #ifdef UNICODE
@@ -325,8 +324,8 @@ typedef unsigned short 		char_t;
 typedef unsigned short		uchar_t;
 
 /*
- *	Text size of buffer macro. A buffer bytes will hold (size / char size) 
- *	characters. 
+ *	Text size of buffer macro. A buffer bytes will hold (size / char size)
+ *	characters.
  */
 #define	TSZ(x)				(sizeof(x) / sizeof(char_t))
 
@@ -371,7 +370,7 @@ typedef unsigned char		uchar_t;
  *	here, many modules in various parts of the tree are cleaner.
  */
 #if (defined (LITTLEFOOT) && defined (INMEM))
-	#include	"lf/inmem.h"
+#include	"lf/inmem.h"
 #endif /* LITTLEFOOT && INMEM */
 
 /*
@@ -578,7 +577,7 @@ typedef struct stat gstat_t;
  *	Otherwise there would be lots more #if-#elif-#else-#endif ugliness.
  */
 #ifdef INMEM
-	#include	"lf/inmem.h"
+#include	"lf/inmem.h"
 #endif
 
 /********************************** Defines ***********************************/
@@ -603,9 +602,9 @@ typedef struct stat gstat_t;
 #define E_ARGS				file, line
 
 #if (defined (ASSERT) || defined (ASSERT_CE))
-	#define a_assert(C)		if (C) ; else error(E_L, E_ASSERT, T("%s"), T(#C))
+#define a_assert(C)		if (C) ; else error(E_L, E_ASSERT, T("%s"), T(#C))
 #else
-	#define a_assert(C)		if (1) ; else
+#define a_assert(C)		if (1) ; else
 #endif /* ASSERT || ASSERT_CE */
 
 #define elementsof(X) sizeof(X) / sizeof(X[0])
@@ -618,20 +617,20 @@ typedef struct stat gstat_t;
  */
 
 typedef enum {
-	undefined	= 0,
-	byteint		= 1,
-	shortint	= 2,
-	integer		= 3,
-	hex			= 4,
-	percent 	= 5,
-	octal		= 6,
-	big			= 7,
-	flag		= 8,
-	floating	= 9,
-	string 		= 10,
-	bytes 		= 11,
-	symbol 		= 12,
-	errmsg 		= 13
+    undefined	= 0,
+    byteint		= 1,
+    shortint	= 2,
+    integer		= 3,
+    hex			= 4,
+    percent 	= 5,
+    octal		= 6,
+    big			= 7,
+    flag		= 8,
+    floating	= 9,
+    string 		= 10,
+    bytes 		= 11,
+    symbol 		= 12,
+    errmsg 		= 13
 } vtype_t;
 
 #ifndef __NO_PACK
@@ -640,27 +639,27 @@ typedef enum {
 
 typedef struct {
 
-	union {
-		char	flag;
-		char	byteint;
-		short	shortint;
-		char	percent;
-		long	integer;
-		long	hex;
-		long	octal;
-		long	big[2];
+    union {
+        char	flag;
+        char	byteint;
+        short	shortint;
+        char	percent;
+        long	integer;
+        long	hex;
+        long	octal;
+        long	big[2];
 #ifdef FLOATING_POINT_SUPPORT
-		double	floating;
+        double	floating;
 #endif /* FLOATING_POINT_SUPPORT */
-		char_t	*string;
-		char	*bytes;
-		char_t	*errmsg;
-		void	*symbol;
-	} value;
+        char_t	*string;
+        char	*bytes;
+        char_t	*errmsg;
+        void	*symbol;
+    } value;
 
-	vtype_t			type;
-	unsigned int	valid		: 8;
-	unsigned int	allocated	: 8;		/* String was balloced */
+    vtype_t			type;
+    unsigned int	valid		: 8;
+    unsigned int	allocated	: 8;		/* String was balloced */
 } value_t;
 
 #ifndef __NO_PACK
@@ -668,7 +667,7 @@ typedef struct {
 #endif /* __NO_PACK */
 
 /*
- *	Allocation flags 
+ *	Allocation flags
  */
 #define VALUE_ALLOCATE		0x1
 
@@ -706,7 +705,7 @@ typedef struct {
  *    ^                           ^                       ^               ^
  *    |                           |                       |               |
  *  rq->buf                    rq->servp               rq->endp      rq->enduf
- *     
+ *
  *	The queue is empty when servp == endp.  This means that the queue will hold
  *	at most rq->buflen -1 bytes.  It is the fillers responsibility to ensure
  *	the ringq is never filled such that servp == endp.
@@ -721,13 +720,13 @@ typedef struct {
  *	Ring queue buffer structure
  */
 typedef struct {
-	unsigned char	*buf;				/* Holding buffer for data */
-	unsigned char	*servp;				/* Pointer to start of data */
-	unsigned char	*endp;				/* Pointer to end of data */
-	unsigned char	*endbuf;			/* Pointer to end of buffer */
-	int				buflen;				/* Length of ring queue */
-	int				maxsize;			/* Maximum size */
-	int				increment;			/* Growth increment */
+    unsigned char	*buf;				/* Holding buffer for data */
+    unsigned char	*servp;				/* Pointer to start of data */
+    unsigned char	*endp;				/* Pointer to end of data */
+    unsigned char	*endbuf;			/* Pointer to end of buffer */
+    int				buflen;				/* Length of ring queue */
+    int				maxsize;			/* Maximum size */
+    int				increment;			/* Growth increment */
 } ringq_t;
 
 /*
@@ -742,15 +741,15 @@ typedef struct {
 #endif /* B_STATS */
 
 /*
- *	Block classes are: 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 
- *					   16384, 32768, 65536 
+ *	Block classes are: 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192,
+ *					   16384, 32768, 65536
  */
 typedef struct {
-	union {
-		void	*next;							/* Pointer to next in q */
-		int		size;							/* Actual requested size */
-	} u;
-	int			flags;							/* Per block allocation flags */
+    union {
+        void	*next;							/* Pointer to next in q */
+        int		size;							/* Actual requested size */
+    } u;
+    int			flags;							/* Per block allocation flags */
 } bType;
 
 #define B_SHIFT			4					/* Convert size to class */
@@ -776,10 +775,10 @@ typedef struct {
  */
 
 typedef struct sym_t {
-	struct sym_t	*forw;					/* Pointer to next hash list */
-	value_t			name;					/* Name of symbol */
-	value_t			content;				/* Value of symbol */
-	int				arg;					/* Parameter value */
+    struct sym_t	*forw;					/* Pointer to next hash list */
+    value_t			name;					/* Name of symbol */
+    value_t			content;				/* Value of symbol */
+    int				arg;					/* Parameter value */
 } sym_t;
 
 typedef int sym_fd_t;						/* Returned by symOpen */
@@ -812,11 +811,11 @@ typedef int sym_fd_t;						/* Returned by symOpen */
 /******************************************************************************/
 
 typedef struct {
-	char_t	*minute;
-	char_t	*hour;
-	char_t	*day;
-	char_t	*month;
-	char_t	*dayofweek;
+    char_t	*minute;
+    char_t	*hour;
+    char_t	*day;
+    char_t	*month;
+    char_t	*dayofweek;
 } cron_t;
 
 extern long		cronUntil(cron_t *cp, int period, time_t testTime);
@@ -827,7 +826,7 @@ extern int		cronFree(cron_t *cp);
 /*                                 SOCKET                                     */
 /******************************************************************************/
 /*
- *	Socket flags 
+ *	Socket flags
  */
 
 #if ((defined (WIN) || defined (CE)) && defined (WEBS) && !defined(WIN32))
@@ -871,7 +870,7 @@ extern int		cronFree(cron_t *cp);
 /*
  *	Handler event masks
  */
-#define SOCKET_READABLE			0x2		/* Make socket readable */ 
+#define SOCKET_READABLE			0x2		/* Make socket readable */
 #define SOCKET_WRITABLE			0x4		/* Make socket writable */
 #define SOCKET_EXCEPTION		0x8		/* Interested in exceptions */
 #define EMF_SOCKET_MESSAGE		(WM_USER+13)
@@ -885,27 +884,27 @@ extern int		cronFree(cron_t *cp);
 #endif /* LITTLEFOOT */
 
 typedef void 	(*socketHandler_t)(int sid, int mask, void* data);
-typedef int		(*socketAccept_t)(int sid, char *ipaddr, int port, 
-					int listenSid);
+typedef int		(*socketAccept_t)(int sid, char *ipaddr, int port,
+                                  int listenSid);
 typedef struct {
-	char			host[64];				/* Host name */
-	ringq_t			inBuf;					/* Input ring queue */
-	ringq_t			outBuf;					/* Output ring queue */
-	ringq_t			lineBuf;				/* Line ring queue */
-	socketAccept_t	accept;					/* Accept handler */
-	socketHandler_t	handler;				/* User I/O handler */
-	void			*handler_data;			/* User handler data */
-	int				handlerMask;			/* Handler events of interest */
-	int				sid;					/* Index into socket[] */
-	int				port;					/* Port to listen on */
-	int				flags;					/* Current state flags */
-	int				sock;					/* Actual socket handle */
-	int				fileHandle;				/* ID of the file handler */
-	int				interestEvents;			/* Mask of events to watch for */
-	int				currentEvents;			/* Mask of ready events (FD_xx) */
-	int				selectEvents;			/* Events being selected */
-	int				saveMask;				/* saved Mask for socketFlush */
-	int				error;					/* Last error */
+    char			host[64];				/* Host name */
+    ringq_t			inBuf;					/* Input ring queue */
+    ringq_t			outBuf;					/* Output ring queue */
+    ringq_t			lineBuf;				/* Line ring queue */
+    socketAccept_t	accept;					/* Accept handler */
+    socketHandler_t	handler;				/* User I/O handler */
+    void			*handler_data;			/* User handler data */
+    int				handlerMask;			/* Handler events of interest */
+    int				sid;					/* Index into socket[] */
+    int				port;					/* Port to listen on */
+    int				flags;					/* Current state flags */
+    int				sock;					/* Actual socket handle */
+    int				fileHandle;				/* ID of the file handler */
+    int				interestEvents;			/* Mask of events to watch for */
+    int				currentEvents;			/* Mask of ready events (FD_xx) */
+    int				selectEvents;			/* Events being selected */
+    int				saveMask;				/* saved Mask for socketFlush */
+    int				error;					/* Last error */
 } socket_t;
 
 /********************************* Prototypes *********************************/
@@ -986,7 +985,7 @@ extern int		emfInstGet();
 extern void		emfInstSet(int inst);
 extern void		error(E_ARGS_DEC, int flags, char_t *fmt, ...);
 extern void		(*errorSetHandler(void (*function)(int etype, char_t *msg))) \
-					(int etype, char_t *msg);
+(int etype, char_t *msg);
 
 #ifdef B_STATS
 #define 		hAlloc(x) 				HALLOC(B_L, x)
@@ -1039,8 +1038,8 @@ extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
 
 extern void		socketClose();
 extern void		socketCloseConnection(int sid);
-extern void		socketCreateHandler(int sid, int mask, socketHandler_t 
-					handler, void* arg);
+extern void		socketCreateHandler(int sid, int mask, socketHandler_t
+                                    handler, void* arg);
 extern void		socketDeleteHandler(int sid);
 extern int		socketEof(int sid);
 extern int 		socketCanWrite(int sid);
@@ -1050,8 +1049,8 @@ extern int		socketGets(int sid, char_t **buf);
 extern int		socketGetPort(int sid);
 extern int		socketInputBuffered(int sid);
 extern int		socketOpen();
-extern int 		socketOpenConnection(char *host, int port, 
-					socketAccept_t accept, int flags);
+extern int 		socketOpenConnection(char *host, int port,
+                                     socketAccept_t accept, int flags);
 extern void 	socketProcess(int hid);
 extern int		socketRead(int sid, char *buf, int len);
 extern int 		socketReady(int hid);
@@ -1061,8 +1060,8 @@ extern int 		socketSelect(int hid, int timeout);
 extern int 		socketGetHandle(int sid);
 extern int 		socketSetBlock(int sid, int flags);
 extern int 		socketGetBlock(int sid);
-extern int 		socketAlloc(char *host, int port, socketAccept_t accept, 
-					int flags);
+extern int 		socketAlloc(char *host, int port, socketAccept_t accept,
+                            int flags);
 extern void 	socketFree(int sid);
 extern int		socketGetError();
 extern socket_t *socketPtr(int sid);
@@ -1088,9 +1087,9 @@ extern void 	symSubClose();
 
 extern void		trace(int lev, char_t *fmt, ...);
 extern void		traceRaw(char_t *buf);
-extern void		(*traceSetHandler(void (*function)(int level, char_t *buf))) 
-					(int level, char_t *buf);
- 
+extern void		(*traceSetHandler(void (*function)(int level, char_t *buf)))
+(int level, char_t *buf);
+
 extern value_t 	valueInteger(long value);
 extern value_t	valueString(char_t *value, int flags);
 extern value_t	valueErrmsg(char_t *value);

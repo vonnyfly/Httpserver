@@ -1,4 +1,4 @@
-/* 
+/*
  *	websda.h -- GoAhead Digest Access Authentication public header
  *
  * Copyright (c) GoAhead Software Inc., 1992-2010. All Rights Reserved.
@@ -12,9 +12,9 @@
 
 /******************************** Description *********************************/
 
-/* 
- *	GoAhead Digest Access Authentication header. This defines the Digest 
- *	access authentication public APIs.  Include this header for files that 
+/*
+ *	GoAhead Digest Access Authentication header. This defines the Digest
+ *	access authentication public APIs.  Include this header for files that
  *	use DAA functions
  */
 

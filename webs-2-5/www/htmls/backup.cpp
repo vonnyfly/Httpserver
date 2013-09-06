@@ -15,9 +15,9 @@ char_t* gogetenv(char_t *key,char_t *value)
     char_t* pos=NULL;
     char_t buf[256];
     int bSuccess;
-    
+
     if (fin) {
-		fseek(fin,0,SEEK_SET);
+        fseek(fin,0,SEEK_SET);
         while (fgetws((wchar_t*)buf, 256, fin)) { // Key & Value
             pos = wcschr(buf, L'=');
             if (!pos) {
@@ -29,7 +29,7 @@ char_t* gogetenv(char_t *key,char_t *value)
             }
             pos++; // Point to the value
             bSuccess = SUCCEEDED(StringCchCopy(value,256,pos));
-            if(bSuccess) {                
+            if(bSuccess) {
                 return value;
             }
         }
@@ -46,13 +46,13 @@ int init(int argc, _TCHAR* argv[])
     write_data(L"Content-type:text/html;charset=gbk\r\n\r\n");
     write_data(L"<TITLE>CGI</TITLE><H3>CGI environment</H3>");
 
-	fin = _wfopen(argv[argc-2], L"rb");
+    fin = _wfopen(argv[argc-2], L"rb");
     return 1;
 }
 void destroy()
 {
     CloseHandle(hOut);
-	fclose(fin);
+    fclose(fin);
 }
 
 int write_data(const char_t *fmt,...)
@@ -243,4 +243,3 @@ int _tmain(int argc, _TCHAR* argv[])
 //n=1
 //SERVER_URL=Windo68.
 
- 

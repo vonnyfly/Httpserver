@@ -41,12 +41,12 @@
 #define     DB_CASE_INSENSITIVE  1
 
 typedef struct dbTable_s {
-	char_t	*name;
-	int		nColumns;
-	char_t	**columnNames;
-	int		*columnTypes;
-	int		nRows;
-	int		**rows;
+    char_t	*name;
+    int		nColumns;
+    char_t	**columnNames;
+    int		*columnTypes;
+    int		nRows;
+    int		**rows;
 } dbTable_t;
 
 /********************************** Prototypes ********************************/
@@ -57,18 +57,18 @@ typedef struct dbTable_s {
 extern int		dbRegisterDBSchema(dbTable_t *sTable);
 
 extern int		dbOpen(char_t *databasename, char_t *filename,
-					int (*gettime)(int did), int flags);
+                       int (*gettime)(int did), int flags);
 extern void		dbClose(int did);
 extern int		dbGetTableId(int did, char_t *tname);
 extern char_t	*dbGetTableName(int did, int tid);
 extern int		dbReadInt(int did, char_t *table, char_t *column, int row,
-					int *returnValue);
+                          int *returnValue);
 extern int		dbReadStr(int did, char_t *table, char_t *column, int row,
-					char_t **returnValue);
+                          char_t **returnValue);
 extern int		dbWriteInt(int did, char_t *table, char_t *column, int row,
-					int idata);
+                           int idata);
 extern int		dbWriteStr(int did, char_t *table, char_t *column, int row,
-					char_t *s);
+                           char_t *s);
 extern int		dbAddRow(int did, char_t *table);
 extern int		dbDeleteRow(int did, char_t *table, int rid);
 extern int		dbSetTableNrow(int did, char_t *table, int nNewRows);
@@ -90,7 +90,7 @@ extern int		dbLoad(int did, char_t *filename, int flags);
  *	case-insensitive string compare when searching.
  */
 extern int		dbSearchStr(int did, char_t *table, char_t *column,
-					char_t *value, int flags);
+                            char_t *value, int flags);
 
 extern void		dbZero(int did);
 

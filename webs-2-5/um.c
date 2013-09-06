@@ -58,20 +58,20 @@
 #define NUMBER_OF_USER_COLUMNS	5
 
 char_t	*userColumnNames[NUMBER_OF_USER_COLUMNS] = {
-			UM_NAME, UM_PASS, UM_GROUP, UM_PROT, UM_DISABLE
+    UM_NAME, UM_PASS, UM_GROUP, UM_PROT, UM_DISABLE
 };
 
 int		userColumnTypes[NUMBER_OF_USER_COLUMNS] = {
-			T_STRING, T_STRING, T_STRING, T_INT, T_INT
+    T_STRING, T_STRING, T_STRING, T_INT, T_INT
 };
 
 dbTable_t userTable = {
-	UM_USER_TABLENAME,
-	NUMBER_OF_USER_COLUMNS,
-	userColumnNames,
-	userColumnTypes,
-	0,
-	NULL
+    UM_USER_TABLENAME,
+    NUMBER_OF_USER_COLUMNS,
+    userColumnNames,
+    userColumnTypes,
+    0,
+    NULL
 };
 
 /*
@@ -80,20 +80,20 @@ dbTable_t userTable = {
 #define NUMBER_OF_GROUP_COLUMNS	5
 
 char_t	*groupColumnNames[NUMBER_OF_GROUP_COLUMNS] = {
-			UM_NAME, UM_PRIVILEGE, UM_METHOD, UM_PROT, UM_DISABLE
+    UM_NAME, UM_PRIVILEGE, UM_METHOD, UM_PROT, UM_DISABLE
 };
 
 int		groupColumnTypes[NUMBER_OF_GROUP_COLUMNS] = {
-			T_STRING, T_INT, T_INT, T_INT, T_INT
+    T_STRING, T_INT, T_INT, T_INT, T_INT
 };
 
 dbTable_t groupTable = {
-	UM_GROUP_TABLENAME,
-	NUMBER_OF_GROUP_COLUMNS,
-	groupColumnNames,
-	groupColumnTypes,
-	0,
-	NULL
+    UM_GROUP_TABLENAME,
+    NUMBER_OF_GROUP_COLUMNS,
+    groupColumnNames,
+    groupColumnTypes,
+    0,
+    NULL
 };
 
 /*
@@ -102,28 +102,28 @@ dbTable_t groupTable = {
 #define NUMBER_OF_ACCESS_COLUMNS	4
 
 char_t	*accessColumnNames[NUMBER_OF_ACCESS_COLUMNS] = {
-			UM_NAME, UM_METHOD, UM_SECURE, UM_GROUP
+    UM_NAME, UM_METHOD, UM_SECURE, UM_GROUP
 };
 
 int		accessColumnTypes[NUMBER_OF_ACCESS_COLUMNS] = {
-			T_STRING, T_INT, T_INT, T_STRING
+    T_STRING, T_INT, T_INT, T_STRING
 };
 
 dbTable_t accessTable = {
-	UM_ACCESS_TABLENAME,
-	NUMBER_OF_ACCESS_COLUMNS,
-	accessColumnNames,
-	accessColumnTypes,
-	0,
-	NULL
+    UM_ACCESS_TABLENAME,
+    NUMBER_OF_ACCESS_COLUMNS,
+    accessColumnNames,
+    accessColumnTypes,
+    0,
+    NULL
 };
 
-/* 
+/*
  *	Database Identifier returned from dbOpen()
  */
-static int		didUM = -1;	
+static int		didUM = -1;
 
-/* 
+/*
  *	Configuration database persist filename
  */
 static char_t	*saveFilename = NULL;
@@ -136,53 +136,53 @@ static bool_t umCheckName(char_t *name);
 
 /*********************************** Code *************************************/
 /*
- *	umOpen() registers the UM tables in the fake emf-database 
+ *	umOpen() registers the UM tables in the fake emf-database
  */
 
 int umOpen()
 {
-	if (++umOpenCount != 1) {
-		return didUM;
-	}
-/*
- *	Do not initialize if intialization has already taken place
- */
-	if (didUM == -1) {
-		didUM = dbOpen(UM_USER_TABLENAME, UM_DB_FILENAME, NULL, 0);
-		dbRegisterDBSchema(&userTable);
-		dbRegisterDBSchema(&groupTable);
-		dbRegisterDBSchema(&accessTable);
-	}
+    if (++umOpenCount != 1) {
+        return didUM;
+    }
+    /*
+     *	Do not initialize if intialization has already taken place
+     */
+    if (didUM == -1) {
+        didUM = dbOpen(UM_USER_TABLENAME, UM_DB_FILENAME, NULL, 0);
+        dbRegisterDBSchema(&userTable);
+        dbRegisterDBSchema(&groupTable);
+        dbRegisterDBSchema(&accessTable);
+    }
 
-	if (saveFilename == NULL) {
-		saveFilename = bstrdup(B_L, UM_TXT_FILENAME);
-	}
+    if (saveFilename == NULL) {
+        saveFilename = bstrdup(B_L, UM_TXT_FILENAME);
+    }
 
-	return didUM;
+    return didUM;
 }
 
 /******************************************************************************/
 /*
- *	umClose() frees up the UM tables in the fake emf-database 
+ *	umClose() frees up the UM tables in the fake emf-database
  */
 
 void umClose()
 {
-	if (--umOpenCount > 0) {
-		return;
-	}
-/*
- *	Do not close if intialization has not taken place
- */
-	if (didUM != -1) {
-		dbClose(didUM);
-		didUM = -1;
-	}
+    if (--umOpenCount > 0) {
+        return;
+    }
+    /*
+     *	Do not close if intialization has not taken place
+     */
+    if (didUM != -1) {
+        dbClose(didUM);
+        didUM = -1;
+    }
 
-	if (saveFilename != NULL) {
-		bfree(B_L, saveFilename);
-		saveFilename = NULL;
-	}
+    if (saveFilename != NULL) {
+        bfree(B_L, saveFilename);
+        saveFilename = NULL;
+    }
 }
 
 /******************************************************************************/
@@ -192,19 +192,19 @@ void umClose()
 
 int	umCommit(char_t *filename)
 {
-	if (filename && *filename) {
-		if (saveFilename != NULL) {
-			bfree(B_L, saveFilename);
-		}
+    if (filename && *filename) {
+        if (saveFilename != NULL) {
+            bfree(B_L, saveFilename);
+        }
 
-		saveFilename = bstrdup(B_L, filename);
-	}
+        saveFilename = bstrdup(B_L, filename);
+    }
 
-	a_assert (saveFilename && *saveFilename);
-	trace(3, T("UM: Writing User Configuration to file <%s>\n"), 
-		saveFilename);
+    a_assert (saveFilename && *saveFilename);
+    trace(3, T("UM: Writing User Configuration to file <%s>\n"),
+          saveFilename);
 
-	return dbSave(didUM, saveFilename, 0);
+    return dbSave(didUM, saveFilename, 0);
 }
 
 /******************************************************************************/
@@ -214,66 +214,66 @@ int	umCommit(char_t *filename)
 
 int umRestore(char_t *filename)
 {
-	if (filename && *filename) {
-		if (saveFilename != NULL) {
-			bfree(B_L, saveFilename);
-		}
+    if (filename && *filename) {
+        if (saveFilename != NULL) {
+            bfree(B_L, saveFilename);
+        }
 
-		saveFilename = bstrdup(B_L, filename);
-	}
+        saveFilename = bstrdup(B_L, filename);
+    }
 
-	a_assert(saveFilename && *saveFilename);
+    a_assert(saveFilename && *saveFilename);
 
-	trace(3, T("UM: Loading User Configuration from file <%s>\n"), 
-		saveFilename);
+    trace(3, T("UM: Loading User Configuration from file <%s>\n"),
+          saveFilename);
 
-/*
- *	First empty the database, otherwise we wind up with duplicates!
- */
-	dbZero(didUM);
-	return dbLoad(didUM, saveFilename, 0);
+    /*
+     *	First empty the database, otherwise we wind up with duplicates!
+     */
+    dbZero(didUM);
+    return dbLoad(didUM, saveFilename, 0);
 }
 
 /******************************************************************************/
 /*
- *	Encrypt/Decrypt a text string.  
+ *	Encrypt/Decrypt a text string.
  *		Returns the number of characters encrypted.
  */
 
 static int umEncryptString(char_t *textString)
 {
-	char_t	*enMask;
-	char_t	enChar;
-	int		numChars;
+    char_t	*enMask;
+    char_t	enChar;
+    int		numChars;
 
-	a_assert(textString);
+    a_assert(textString);
 
-	enMask = UM_XOR_ENCRYPT;
-	numChars = 0;
+    enMask = UM_XOR_ENCRYPT;
+    numChars = 0;
 
-	while (*textString) {
-		enChar = *textString ^ *enMask;
-/*
- *		Do not produce encrypted text with embedded linefeeds or tabs.
- *			Simply use existing character.
- */
-		if (enChar && !gisspace(enChar)) 
-			*textString = enChar;
-/*
- *		Increment all pointers.
- */
-		enMask++;
-		textString++;
-		numChars++;
-/*
- *		Wrap encryption mask pointer if at end of length.
- */
-		if (*enMask == '\0') {
-			enMask = UM_XOR_ENCRYPT;
-		}
-	}
+    while (*textString) {
+        enChar = *textString ^ *enMask;
+        /*
+         *		Do not produce encrypted text with embedded linefeeds or tabs.
+         *			Simply use existing character.
+         */
+        if (enChar && !gisspace(enChar))
+            *textString = enChar;
+        /*
+         *		Increment all pointers.
+         */
+        enMask++;
+        textString++;
+        numChars++;
+        /*
+         *		Wrap encryption mask pointer if at end of length.
+         */
+        if (*enMask == '\0') {
+            enMask = UM_XOR_ENCRYPT;
+        }
+    }
 
-	return numChars;
+    return numChars;
 }
 
 /******************************************************************************/
@@ -284,72 +284,72 @@ static int umEncryptString(char_t *textString)
 
 static char_t *umGetFirstRowData(char_t *tableName, char_t *columnName)
 {
-	char_t	*columnData;
-	int		row;
-	int		check;
+    char_t	*columnData;
+    int		row;
+    int		check;
 
-	a_assert(tableName && *tableName);
-	a_assert(columnName && *columnName);
+    a_assert(tableName && *tableName);
+    a_assert(columnName && *columnName);
 
-	row = 0;
-/*
- *	Move through table until we retrieve the first row with non-null 
- *	column data.
- */
-	columnData = NULL;
-	while ((check = dbReadStr(didUM, tableName, columnName, row++, 
-		&columnData)) == 0 || (check == DB_ERR_ROW_DELETED)) {
-		if (columnData && *columnData) {
-			return columnData;
-		}
-	}
+    row = 0;
+    /*
+     *	Move through table until we retrieve the first row with non-null
+     *	column data.
+     */
+    columnData = NULL;
+    while ((check = dbReadStr(didUM, tableName, columnName, row++,
+                              &columnData)) == 0 || (check == DB_ERR_ROW_DELETED)) {
+        if (columnData && *columnData) {
+            return columnData;
+        }
+    }
 
-	return NULL;
+    return NULL;
 }
 
 /******************************************************************************/
 /*
- *	umGetNextRowData() -	return a pointer to the first non-blank 
+ *	umGetNextRowData() -	return a pointer to the first non-blank
  *						key value following the given one.
  */
 
-static char_t *umGetNextRowData(char_t *tableName, char_t *columnName, 
-								char_t *keyLast)
+static char_t *umGetNextRowData(char_t *tableName, char_t *columnName,
+                                char_t *keyLast)
 {
-	char_t	*key;
-	int		row;
-	int		check;
+    char_t	*key;
+    int		row;
+    int		check;
 
-	a_assert(tableName && *tableName);
-	a_assert(columnName && *columnName);
-	a_assert(keyLast && *keyLast);
-/*
- *	Position row counter to row where the given key value was found
- */
-	row = 0;
-	key = NULL;
+    a_assert(tableName && *tableName);
+    a_assert(columnName && *columnName);
+    a_assert(keyLast && *keyLast);
+    /*
+     *	Position row counter to row where the given key value was found
+     */
+    row = 0;
+    key = NULL;
 
-	while ((((check = dbReadStr(didUM, tableName, columnName, row++, 
-		&key)) == 0) || (check == DB_ERR_ROW_DELETED)) &&
-		((key == NULL) || (gstrcmp(key, keyLast) != 0))) {
-	}
-/*
- *	If the last key value was not found, return NULL
- */
-	if (!key || gstrcmp(key, keyLast) != 0) {
-		return NULL;
-	}
-/*
- *	Move through table until we retrieve the next row with a non-null key
- */
-	while (((check = dbReadStr(didUM, tableName, columnName, row++, &key)) 
-		== 0) || (check == DB_ERR_ROW_DELETED)) {
-		if (key && *key && (gstrcmp(key, keyLast) != 0)) {
-			return key;
-		}
-	}
+    while ((((check = dbReadStr(didUM, tableName, columnName, row++,
+                                &key)) == 0) || (check == DB_ERR_ROW_DELETED)) &&
+           ((key == NULL) || (gstrcmp(key, keyLast) != 0))) {
+    }
+    /*
+     *	If the last key value was not found, return NULL
+     */
+    if (!key || gstrcmp(key, keyLast) != 0) {
+        return NULL;
+    }
+    /*
+     *	Move through table until we retrieve the next row with a non-null key
+     */
+    while (((check = dbReadStr(didUM, tableName, columnName, row++, &key))
+            == 0) || (check == DB_ERR_ROW_DELETED)) {
+        if (key && *key && (gstrcmp(key, keyLast) != 0)) {
+            return key;
+        }
+    }
 
-	return NULL;
+    return NULL;
 }
 
 /******************************************************************************/
@@ -357,65 +357,65 @@ static char_t *umGetNextRowData(char_t *tableName, char_t *columnName,
  *	umAddUser() - Adds a user to the "users" table.
  */
 
-int	umAddUser(char_t *user, char_t *pass, char_t *group, 
-			  bool_t prot, bool_t disabled)
+int	umAddUser(char_t *user, char_t *pass, char_t *group,
+              bool_t prot, bool_t disabled)
 {
-	int		row;
-	char_t	*password;
+    int		row;
+    char_t	*password;
 
-	a_assert(user && *user);
-	a_assert(pass && *pass);
-	a_assert(group && *group);
+    a_assert(user && *user);
+    a_assert(pass && *pass);
+    a_assert(group && *group);
 
-	trace(3, T("UM: Adding User <%s>\n"), user);
+    trace(3, T("UM: Adding User <%s>\n"), user);
 
-/*
- *	Do not allow duplicates
- */
-	if (umUserExists(user)) {
-		return UM_ERR_DUPLICATE;
-	}
+    /*
+     *	Do not allow duplicates
+     */
+    if (umUserExists(user)) {
+        return UM_ERR_DUPLICATE;
+    }
 
-/*
- *	Make sure user name and password contain valid characters
- */
-	if (!umCheckName(user)) {
-		return UM_ERR_BAD_NAME;
-	}
+    /*
+     *	Make sure user name and password contain valid characters
+     */
+    if (!umCheckName(user)) {
+        return UM_ERR_BAD_NAME;
+    }
 
-	if (!umCheckName(pass)) {
-		return UM_ERR_BAD_PASSWORD;
-	}
+    if (!umCheckName(pass)) {
+        return UM_ERR_BAD_PASSWORD;
+    }
 
-/*
- *	Make sure group exists
- */
-	if (!umGroupExists(group)) {
-		return UM_ERR_NOT_FOUND;
-	}
+    /*
+     *	Make sure group exists
+     */
+    if (!umGroupExists(group)) {
+        return UM_ERR_NOT_FOUND;
+    }
 
-/*
- *	Now create the user record
- */
-	row = dbAddRow(didUM, UM_USER_TABLENAME);
+    /*
+     *	Now create the user record
+     */
+    row = dbAddRow(didUM, UM_USER_TABLENAME);
 
-	if (row < 0) {
-		return UM_ERR_GENERAL;
-	}
+    if (row < 0) {
+        return UM_ERR_GENERAL;
+    }
 
-	if (dbWriteStr(didUM, UM_USER_TABLENAME, UM_NAME, row, user) != 0) {
-		return UM_ERR_GENERAL;
-	}
+    if (dbWriteStr(didUM, UM_USER_TABLENAME, UM_NAME, row, user) != 0) {
+        return UM_ERR_GENERAL;
+    }
 
-	password = bstrdup(B_L, pass);
-	umEncryptString(password);
-	dbWriteStr(didUM, UM_USER_TABLENAME, UM_PASS, row, password);
-	bfree(B_L, password);
-	dbWriteStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, group);
-	dbWriteInt(didUM, UM_USER_TABLENAME, UM_PROT, row, prot); 
-	dbWriteInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, disabled);
+    password = bstrdup(B_L, pass);
+    umEncryptString(password);
+    dbWriteStr(didUM, UM_USER_TABLENAME, UM_PASS, row, password);
+    bfree(B_L, password);
+    dbWriteStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, group);
+    dbWriteInt(didUM, UM_USER_TABLENAME, UM_PROT, row, prot);
+    dbWriteInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, disabled);
 
-	return 0;
+    return 0;
 }
 
 /******************************************************************************/
@@ -425,25 +425,25 @@ int	umAddUser(char_t *user, char_t *pass, char_t *group,
 
 int	umDeleteUser(char_t *user)
 {
-	int row;
+    int row;
 
-	a_assert(user && *user);
-	trace(3, T("UM: Deleting User <%s>\n"), user);
-/*
- *	Check to see if user is delete-protected
- */
-	if (umGetUserProtected(user)) {
-		return UM_ERR_PROTECTED;
-	} 
+    a_assert(user && *user);
+    trace(3, T("UM: Deleting User <%s>\n"), user);
+    /*
+     *	Check to see if user is delete-protected
+     */
+    if (umGetUserProtected(user)) {
+        return UM_ERR_PROTECTED;
+    }
 
-/*
- *	If found, delete the user from the database
- */
-	if ((row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0)) >= 0) {
-		return dbDeleteRow(didUM, UM_USER_TABLENAME, row);
-	} 
+    /*
+     *	If found, delete the user from the database
+     */
+    if ((row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0)) >= 0) {
+        return dbDeleteRow(didUM, UM_USER_TABLENAME, row);
+    }
 
-	return UM_ERR_NOT_FOUND;
+    return UM_ERR_NOT_FOUND;
 }
 
 /******************************************************************************/
@@ -454,18 +454,18 @@ int	umDeleteUser(char_t *user)
 
 char_t *umGetFirstUser()
 {
-	return umGetFirstRowData(UM_USER_TABLENAME, UM_NAME);
+    return umGetFirstRowData(UM_USER_TABLENAME, UM_NAME);
 }
 
 /******************************************************************************/
 /*
  *	umGetNextUser()	Returns the next user found in the "users" table after
- *					the given user. 	
+ *					the given user.
  */
 
 char_t *umGetNextUser(char_t *userLast)
 {
-	return umGetNextRowData(UM_USER_TABLENAME, UM_NAME, userLast);
+    return umGetNextRowData(UM_USER_TABLENAME, UM_NAME, userLast);
 }
 
 /******************************************************************************/
@@ -475,13 +475,13 @@ char_t *umGetNextUser(char_t *userLast)
 
 bool_t umUserExists(char_t *user)
 {
-	a_assert(user && *user);
+    a_assert(user && *user);
 
-	if (dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0) >= 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+    if (dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0) >= 0) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 /******************************************************************************/
@@ -491,27 +491,27 @@ bool_t umUserExists(char_t *user)
 
 char_t *umGetUserPassword(char_t *user)
 {
-	char_t	*password;
-	int		row;
+    char_t	*password;
+    int		row;
 
-	a_assert(user && *user);
+    a_assert(user && *user);
 
-	password = NULL;
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    password = NULL;
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
 
-	if (row >= 0) {
-		char_t *pass = NULL;
-		dbReadStr(didUM, UM_USER_TABLENAME, UM_PASS, row, &pass);
-/*
- *		Decrypt	password
- *		Note, this function returns a copy of the password, which must
- *		be deleted at some time in the future.
- */
-		password = bstrdup(B_L, pass);
-		umEncryptString(password);
-	}
+    if (row >= 0) {
+        char_t *pass = NULL;
+        dbReadStr(didUM, UM_USER_TABLENAME, UM_PASS, row, &pass);
+        /*
+         *		Decrypt	password
+         *		Note, this function returns a copy of the password, which must
+         *		be deleted at some time in the future.
+         */
+        password = bstrdup(B_L, pass);
+        umEncryptString(password);
+    }
 
-	return password;
+    return password;
 }
 
 /******************************************************************************/
@@ -522,25 +522,25 @@ char_t *umGetUserPassword(char_t *user)
 
 int	umSetUserPassword(char_t *user, char_t *pass)
 {
-	int		row, nRet;
-	char_t	*password;
+    int		row, nRet;
+    char_t	*password;
 
-	a_assert(user && *user);
-	a_assert(pass && *pass);
-	trace(3, T("UM: Attempting to change the password for user <%s>\n"), user);
-/*
- *	Find the row of the user
- */
-	if ((row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0)) < 0) {
-		return UM_ERR_NOT_FOUND;
-	}
+    a_assert(user && *user);
+    a_assert(pass && *pass);
+    trace(3, T("UM: Attempting to change the password for user <%s>\n"), user);
+    /*
+     *	Find the row of the user
+     */
+    if ((row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0)) < 0) {
+        return UM_ERR_NOT_FOUND;
+    }
 
-	password = bstrdup(B_L, pass);
-	umEncryptString(password);
-	nRet = dbWriteStr(didUM, UM_USER_TABLENAME, UM_PASS, row, password);
-	bfree(B_L, password);
+    password = bstrdup(B_L, pass);
+    umEncryptString(password);
+    nRet = dbWriteStr(didUM, UM_USER_TABLENAME, UM_PASS, row, password);
+    bfree(B_L, password);
 
-	return nRet;
+    return nRet;
 }
 
 /******************************************************************************/
@@ -550,21 +550,21 @@ int	umSetUserPassword(char_t *user, char_t *pass)
 
 char_t *umGetUserGroup(char_t *user)
 {
-	char_t	*group;
-	int		row;
+    char_t	*group;
+    int		row;
 
-	a_assert(user && *user);
-	group = NULL;
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    a_assert(user && *user);
+    group = NULL;
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
 
-	if (row >= 0) {
-		dbReadStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, &group);
-	}
+    if (row >= 0) {
+        dbReadStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, &group);
+    }
 
-	return group;
+    return group;
 }
 
 /******************************************************************************/
@@ -574,20 +574,20 @@ char_t *umGetUserGroup(char_t *user)
 
 int	umSetUserGroup(char_t *user, char_t *group)
 {
-	int row;
+    int row;
 
-	a_assert(user && *user);
-	a_assert(group && *group);
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    a_assert(user && *user);
+    a_assert(group && *group);
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
 
-	if (row >= 0) {
-		return dbWriteStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, group);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteStr(didUM, UM_USER_TABLENAME, UM_GROUP, row, group);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -598,21 +598,21 @@ int	umSetUserGroup(char_t *user, char_t *group)
 
 bool_t	umGetUserEnabled(char_t *user)
 {
-	int disabled, row;
+    int disabled, row;
 
-	a_assert(user && *user);
+    a_assert(user && *user);
 
-	disabled = 1;
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    disabled = 1;
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, &disabled);
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, &disabled);
+    }
 
-	return (bool_t)!disabled;
+    return (bool_t)!disabled;
 }
 
 /******************************************************************************/
@@ -621,18 +621,18 @@ bool_t	umGetUserEnabled(char_t *user)
  */
 int	umSetUserEnabled(char_t *user, bool_t enabled)
 {
-	int row;
+    int row;
 
-	a_assert(user && *user);
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, !enabled);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    a_assert(user && *user);
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_USER_TABLENAME, UM_DISABLE, row, !enabled);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -642,20 +642,20 @@ int	umSetUserEnabled(char_t *user, bool_t enabled)
 
 bool_t umGetUserProtected(char_t *user)
 {
-	int protect, row;
+    int protect, row;
 
-	a_assert(user && *user);
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
-	protect = FALSE;
+    a_assert(user && *user);
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    protect = FALSE;
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_USER_TABLENAME, UM_PROT, row, &protect);
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_USER_TABLENAME, UM_PROT, row, &protect);
+    }
 
-	return (bool_t)protect;
+    return (bool_t)protect;
 }
 
 /******************************************************************************/
@@ -664,19 +664,19 @@ bool_t umGetUserProtected(char_t *user)
  */
 int	umSetUserProtected(char_t *user, bool_t protect)
 {
-	int row;
+    int row;
 
-	a_assert(user && *user);
-/*
- *	Find the row of the user
- */
-	row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
+    a_assert(user && *user);
+    /*
+     *	Find the row of the user
+     */
+    row = dbSearchStr(didUM, UM_USER_TABLENAME, UM_NAME, user, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_USER_TABLENAME, UM_PROT, row, protect);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_USER_TABLENAME, UM_PROT, row, protect);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 
@@ -685,51 +685,51 @@ int	umSetUserProtected(char_t *user, bool_t protect)
  *	umAddGroup() adds a group to the "Group" table
  */
 
-int	umAddGroup(char_t *group, short priv, accessMeth_t am, 
-			   bool_t prot, bool_t disabled)
+int	umAddGroup(char_t *group, short priv, accessMeth_t am,
+               bool_t prot, bool_t disabled)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	trace(3, T("UM: Adding group <%s>\n"), group);
-	
-/*
- *	Do not allow duplicates
- */
-	if (umGroupExists(group)) {
-		return UM_ERR_DUPLICATE;
-	}
+    a_assert(group && *group);
+    trace(3, T("UM: Adding group <%s>\n"), group);
 
-/*
- *	Only allow valid characters in key field
- */
-	if (!umCheckName(group)) {
-		return UM_ERR_BAD_NAME;
-	}
+    /*
+     *	Do not allow duplicates
+     */
+    if (umGroupExists(group)) {
+        return UM_ERR_DUPLICATE;
+    }
 
-/*
- *	Add a new row to the table
- */
-	if ((row = dbAddRow(didUM, UM_GROUP_TABLENAME)) < 0) {
-		return UM_ERR_GENERAL;
-	}
+    /*
+     *	Only allow valid characters in key field
+     */
+    if (!umCheckName(group)) {
+        return UM_ERR_BAD_NAME;
+    }
 
-/*
- *	Write the key field
- */
-	if (dbWriteStr(didUM, UM_GROUP_TABLENAME, UM_NAME, row, group) != 0) {
-		return UM_ERR_GENERAL;
-	}
+    /*
+     *	Add a new row to the table
+     */
+    if ((row = dbAddRow(didUM, UM_GROUP_TABLENAME)) < 0) {
+        return UM_ERR_GENERAL;
+    }
 
-/*
- *	Write the remaining fields
- */
-	dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row, priv);
-	dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int) am);
-	dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row, prot);
-	dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row, disabled);
+    /*
+     *	Write the key field
+     */
+    if (dbWriteStr(didUM, UM_GROUP_TABLENAME, UM_NAME, row, group) != 0) {
+        return UM_ERR_GENERAL;
+    }
 
-	return 0;
+    /*
+     *	Write the remaining fields
+     */
+    dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row, priv);
+    dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int) am);
+    dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row, prot);
+    dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row, disabled);
+
+    return 0;
 }
 
 /******************************************************************************/
@@ -739,33 +739,33 @@ int	umAddGroup(char_t *group, short priv, accessMeth_t am,
 
 int	umDeleteGroup(char_t *group)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	trace(3, T("UM: Deleting Group <%s>\n"), group);
+    a_assert(group && *group);
+    trace(3, T("UM: Deleting Group <%s>\n"), group);
 
-/*
- *	Check to see if the group is in use
- */
-	if (umGetGroupInUse(group)) {
-		return UM_ERR_IN_USE;
-	} 
+    /*
+     *	Check to see if the group is in use
+     */
+    if (umGetGroupInUse(group)) {
+        return UM_ERR_IN_USE;
+    }
 
-/*
- *	Check to see if the group is delete-protected
- */
-	if (umGetGroupProtected(group)) {
-		return UM_ERR_PROTECTED;
-	} 
+    /*
+     *	Check to see if the group is delete-protected
+     */
+    if (umGetGroupProtected(group)) {
+        return UM_ERR_PROTECTED;
+    }
 
-/*
- *	Find the row of the group to delete
- */
-	if ((row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0)) < 0) {
-		return UM_ERR_NOT_FOUND;
-	}
+    /*
+     *	Find the row of the group to delete
+     */
+    if ((row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0)) < 0) {
+        return UM_ERR_NOT_FOUND;
+    }
 
-	return dbDeleteRow(didUM, UM_GROUP_TABLENAME, row);
+    return dbDeleteRow(didUM, UM_GROUP_TABLENAME, row);
 }
 
 /******************************************************************************/
@@ -775,13 +775,13 @@ int	umDeleteGroup(char_t *group)
 
 bool_t umGroupExists(char_t *group)
 {
-	a_assert(group && *group);
+    a_assert(group && *group);
 
-	if (dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0) >= 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+    if (dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0) >= 0) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 
@@ -793,23 +793,23 @@ bool_t umGroupExists(char_t *group)
 
 bool_t umGetGroupInUse(char_t *group)
 {
-	a_assert(group && *group);
+    a_assert(group && *group);
 
-/*
- *	First, check the user table
- */
-	if (dbSearchStr(didUM, UM_USER_TABLENAME, UM_GROUP, group, 0) >= 0) {
-		return TRUE;
-	} 
+    /*
+     *	First, check the user table
+     */
+    if (dbSearchStr(didUM, UM_USER_TABLENAME, UM_GROUP, group, 0) >= 0) {
+        return TRUE;
+    }
 
-/*
- *	Second, check the access limit table
- */
-	if (dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, group, 0) >= 0) {
-		return TRUE;
-	} 
+    /*
+     *	Second, check the access limit table
+     */
+    if (dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, group, 0) >= 0) {
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -820,7 +820,7 @@ bool_t umGetGroupInUse(char_t *group)
 
 char_t *umGetFirstGroup()
 {
-	return umGetFirstRowData(UM_GROUP_TABLENAME, UM_NAME);
+    return umGetFirstRowData(UM_GROUP_TABLENAME, UM_NAME);
 }
 
 /******************************************************************************/
@@ -831,7 +831,7 @@ char_t *umGetFirstGroup()
 
 char_t *umGetNextGroup(char_t *groupLast)
 {
-	return umGetNextRowData(UM_GROUP_TABLENAME, UM_NAME, groupLast);
+    return umGetNextRowData(UM_GROUP_TABLENAME, UM_NAME, groupLast);
 }
 
 /******************************************************************************/
@@ -841,18 +841,18 @@ char_t *umGetNextGroup(char_t *groupLast)
 
 accessMeth_t umGetGroupAccessMethod(char_t *group)
 {
-	int am, row;
+    int am, row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int *)&am);
-	} else {
-		am = AM_INVALID;
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int *)&am);
+    } else {
+        am = AM_INVALID;
+    }
 
-	return (accessMeth_t) am;
+    return (accessMeth_t) am;
 }
 
 /******************************************************************************/
@@ -862,16 +862,16 @@ accessMeth_t umGetGroupAccessMethod(char_t *group)
 
 int	umSetGroupAccessMethod(char_t *group, accessMeth_t am)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int) am);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_METHOD, row, (int) am);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -881,17 +881,17 @@ int	umSetGroupAccessMethod(char_t *group, accessMeth_t am)
 
 short umGetGroupPrivilege(char_t *group)
 {
-	int privilege, row;
+    int privilege, row;
 
-	a_assert(group && *group);
-	privilege = -1;
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    privilege = -1;
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row, &privilege);
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row, &privilege);
+    }
 
-	return (short) privilege;
+    return (short) privilege;
 }
 
 /******************************************************************************/
@@ -901,17 +901,17 @@ short umGetGroupPrivilege(char_t *group)
 
 int	umSetGroupPrivilege(char_t *group, short privilege)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row, 
-			(int)privilege);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PRIVILEGE, row,
+                          (int)privilege);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -922,17 +922,17 @@ int	umSetGroupPrivilege(char_t *group, short privilege)
 
 bool_t umGetGroupEnabled(char_t *group)
 {
-	int disabled, row;
+    int disabled, row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
-	disabled = 1;
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    disabled = 1;
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row, &disabled);
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row, &disabled);
+    }
 
-	return (bool_t) !disabled;
+    return (bool_t) !disabled;
 }
 
 /******************************************************************************/
@@ -942,17 +942,17 @@ bool_t umGetGroupEnabled(char_t *group)
 
 int umSetGroupEnabled(char_t *group, bool_t enabled)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row, 
-			(int) !enabled);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_DISABLE, row,
+                          (int) !enabled);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -963,17 +963,17 @@ int umSetGroupEnabled(char_t *group, bool_t enabled)
 
 bool_t umGetGroupProtected(char_t *group)
 {
-	int protect, row;
+    int protect, row;
 
-	a_assert(group && *group);
+    a_assert(group && *group);
 
-	protect = 0;
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
-	if (row >= 0) {
-		dbReadInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row, &protect);
-	}
+    protect = 0;
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    if (row >= 0) {
+        dbReadInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row, &protect);
+    }
 
-	return (bool_t) protect;
+    return (bool_t) protect;
 }
 
 /******************************************************************************/
@@ -983,17 +983,17 @@ bool_t umGetGroupProtected(char_t *group)
 
 int	umSetGroupProtected(char_t *group, bool_t protect)
 {
-	int row;
+    int row;
 
-	a_assert(group && *group);
-	row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
+    a_assert(group && *group);
+    row = dbSearchStr(didUM, UM_GROUP_TABLENAME, UM_NAME, group, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row, 
-			(int) protect);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_GROUP_TABLENAME, UM_PROT, row,
+                          (int) protect);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 
@@ -1004,40 +1004,40 @@ int	umSetGroupProtected(char_t *group, bool_t protect)
 
 int	umAddAccessLimit(char_t *url, accessMeth_t am, short secure, char_t *group)
 {
-	int row;
+    int row;
 
-	a_assert(url && *url);
-	trace(3, T("UM: Adding Access Limit for <%s>\n"), url);
+    a_assert(url && *url);
+    trace(3, T("UM: Adding Access Limit for <%s>\n"), url);
 
-/*
- *	Do not allow duplicates
- */
-	if (umAccessLimitExists(url)) {
-		return UM_ERR_DUPLICATE;
-	}
+    /*
+     *	Do not allow duplicates
+     */
+    if (umAccessLimitExists(url)) {
+        return UM_ERR_DUPLICATE;
+    }
 
-/*
- *	Add a new row to the table
- */
-	if ((row = dbAddRow(didUM, UM_ACCESS_TABLENAME)) < 0) {
-		return UM_ERR_GENERAL;
-	}
+    /*
+     *	Add a new row to the table
+     */
+    if ((row = dbAddRow(didUM, UM_ACCESS_TABLENAME)) < 0) {
+        return UM_ERR_GENERAL;
+    }
 
-/*
- *	Write the key field
- */
-	if(dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, row, url) < 0) {
-		return UM_ERR_GENERAL;
-	}
+    /*
+     *	Write the key field
+     */
+    if(dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, row, url) < 0) {
+        return UM_ERR_GENERAL;
+    }
 
-/*
- *	Write the remaining fields
- */
-	dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, (int)am);
-	dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row, (int)secure);
-	dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, group);
+    /*
+     *	Write the remaining fields
+     */
+    dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, (int)am);
+    dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row, (int)secure);
+    dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, group);
 
-	return 0;
+    return 0;
 }
 
 /******************************************************************************/
@@ -1047,18 +1047,18 @@ int	umAddAccessLimit(char_t *url, accessMeth_t am, short secure, char_t *group)
 
 int	umDeleteAccessLimit(char_t *url)
 {
-	int row;
+    int row;
 
-	a_assert(url && *url);
-	trace(3, T("UM: Deleting Access Limit for <%s>\n"), url);
-/*
- *	Find the row of the access limit to delete
- */
-	if ((row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0)) < 0) {
-		return UM_ERR_NOT_FOUND;
-	}
+    a_assert(url && *url);
+    trace(3, T("UM: Deleting Access Limit for <%s>\n"), url);
+    /*
+     *	Find the row of the access limit to delete
+     */
+    if ((row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0)) < 0) {
+        return UM_ERR_NOT_FOUND;
+    }
 
-	return dbDeleteRow(didUM, UM_ACCESS_TABLENAME, row);
+    return dbDeleteRow(didUM, UM_ACCESS_TABLENAME, row);
 }
 
 /******************************************************************************/
@@ -1068,18 +1068,18 @@ int	umDeleteAccessLimit(char_t *url)
 
 char_t *umGetFirstAccessLimit()
 {
-	return umGetFirstRowData(UM_ACCESS_TABLENAME, UM_NAME);
+    return umGetFirstRowData(UM_ACCESS_TABLENAME, UM_NAME);
 }
 
 /******************************************************************************/
 /*
- *	umGetNextAccessLimit() -	return a pointer to the first non-blank 
+ *	umGetNextAccessLimit() -	return a pointer to the first non-blank
  *								access limit following the given one
  */
 
 char_t *umGetNextAccessLimit(char_t *urlLast)
 {
-	return umGetNextRowData(UM_ACCESS_TABLENAME, UM_NAME, urlLast);
+    return umGetNextRowData(UM_ACCESS_TABLENAME, UM_NAME, urlLast);
 }
 
 /******************************************************************************/
@@ -1089,13 +1089,13 @@ char_t *umGetNextAccessLimit(char_t *urlLast)
 
 bool_t	umAccessLimitExists(char_t *url)
 {
-	a_assert(url && *url);
+    a_assert(url && *url);
 
-	if (dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0) < 0) {
-		return FALSE;
-	} else {
-		return TRUE;
-	}
+    if (dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0) < 0) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
 }
 
 /******************************************************************************/
@@ -1105,16 +1105,16 @@ bool_t	umAccessLimitExists(char_t *url)
 
 accessMeth_t umGetAccessLimitMethod(char_t *url)
 {
-	int am, row;
+    int am, row;
 
-	am = (int) AM_INVALID;
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    am = (int) AM_INVALID;
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, &am);
-	} 
+    if (row >= 0) {
+        dbReadInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, &am);
+    }
 
-	return (accessMeth_t) am;
+    return (accessMeth_t) am;
 }
 
 /******************************************************************************/
@@ -1124,16 +1124,16 @@ accessMeth_t umGetAccessLimitMethod(char_t *url)
 
 int	umSetAccessLimitMethod(char_t *url, accessMeth_t am)
 {
-	int row;
+    int row;
 
-	a_assert(url && *url);
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    a_assert(url && *url);
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, (int) am);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_METHOD, row, (int) am);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -1143,17 +1143,17 @@ int	umSetAccessLimitMethod(char_t *url, accessMeth_t am)
 
 short umGetAccessLimitSecure(char_t *url)
 {
-	int secure, row;
+    int secure, row;
 
-	a_assert(url && *url);
-	secure = -1;
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    a_assert(url && *url);
+    secure = -1;
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		dbReadInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row, &secure);
-	}
+    if (row >= 0) {
+        dbReadInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row, &secure);
+    }
 
-	return (short)secure;
+    return (short)secure;
 }
 
 /******************************************************************************/
@@ -1163,17 +1163,17 @@ short umGetAccessLimitSecure(char_t *url)
 
 int	umSetAccessLimitSecure(char_t *url, short secure)
 {
-	int row;
+    int row;
 
-	a_assert(url && *url);
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    a_assert(url && *url);
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		return dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row, 
-			(int)secure);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteInt(didUM, UM_ACCESS_TABLENAME, UM_SECURE, row,
+                          (int)secure);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -1183,18 +1183,18 @@ int	umSetAccessLimitSecure(char_t *url, short secure)
 
 char_t *umGetAccessLimitGroup(char_t *url)
 {
-	char_t	*group;
-	int		row;
+    char_t	*group;
+    int		row;
 
-	a_assert(url && *url);
-	group = NULL;
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    a_assert(url && *url);
+    group = NULL;
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		dbReadStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, &group);
-	}
+    if (row >= 0) {
+        dbReadStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, &group);
+    }
 
-	return group;
+    return group;
 }
 
 /******************************************************************************/
@@ -1204,16 +1204,16 @@ char_t *umGetAccessLimitGroup(char_t *url)
 
 int	umSetAccessLimitGroup(char_t *url, char_t *group)
 {
-	int row;
+    int row;
 
-	a_assert(url && *url);
-	row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
+    a_assert(url && *url);
+    row = dbSearchStr(didUM, UM_ACCESS_TABLENAME, UM_NAME, url, 0);
 
-	if (row >= 0) {
-		return dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, group);
-	} else {
-		return UM_ERR_NOT_FOUND;
-	}
+    if (row >= 0) {
+        return dbWriteStr(didUM, UM_ACCESS_TABLENAME, UM_GROUP, row, group);
+    } else {
+        return UM_ERR_NOT_FOUND;
+    }
 }
 
 /******************************************************************************/
@@ -1224,45 +1224,45 @@ int	umSetAccessLimitGroup(char_t *url, char_t *group)
 
 char_t *umGetAccessLimit(char_t *url)
 {
-	char_t	*urlRet, *urlCheck, *lastChar;
-	int		len;
-	
-	a_assert(url && *url);
-	urlRet = NULL;
-	urlCheck = bstrdup(B_L, url);
-	a_assert(urlCheck);
-	len = gstrlen(urlCheck);
-/*
- *	Scan back through URL to see if there is a "parent" access limit
- */
-	while (len && !urlRet) {
-		if (umAccessLimitExists(urlCheck)) {
-			urlRet = bstrdup(B_L, urlCheck);
-		} else {
-/*
- *	Trim the end portion of the URL to the previous directory marker
- */
-			lastChar = urlCheck + len;
-			lastChar--;
+    char_t	*urlRet, *urlCheck, *lastChar;
+    int		len;
 
-			while ((lastChar >= urlCheck) && ((*lastChar == '/') || 
-				(*lastChar == '\\'))) {
-				*lastChar = 0;
-				lastChar--;
-			}
+    a_assert(url && *url);
+    urlRet = NULL;
+    urlCheck = bstrdup(B_L, url);
+    a_assert(urlCheck);
+    len = gstrlen(urlCheck);
+    /*
+     *	Scan back through URL to see if there is a "parent" access limit
+     */
+    while (len && !urlRet) {
+        if (umAccessLimitExists(urlCheck)) {
+            urlRet = bstrdup(B_L, urlCheck);
+        } else {
+            /*
+             *	Trim the end portion of the URL to the previous directory marker
+             */
+            lastChar = urlCheck + len;
+            lastChar--;
 
-			while ((lastChar >= urlCheck) && (*lastChar != '/') && 
-				(*lastChar != '\\')) {
-				*lastChar = 0;
-				lastChar--;
-			}
+            while ((lastChar >= urlCheck) && ((*lastChar == '/') ||
+                                              (*lastChar == '\\'))) {
+                *lastChar = 0;
+                lastChar--;
+            }
 
-			len = gstrlen(urlCheck);
-		}
-	}
-	bfree (B_L, urlCheck);
+            while ((lastChar >= urlCheck) && (*lastChar != '/') &&
+                   (*lastChar != '\\')) {
+                *lastChar = 0;
+                lastChar--;
+            }
 
-	return urlRet;
+            len = gstrlen(urlCheck);
+        }
+    }
+    bfree (B_L, urlCheck);
+
+    return urlRet;
 }
 
 /******************************************************************************/
@@ -1272,25 +1272,25 @@ char_t *umGetAccessLimit(char_t *url)
 
 accessMeth_t umGetAccessMethodForURL(char_t *url)
 {
-	accessMeth_t	amRet;
-	char_t			*urlHavingLimit, *group;
-	
-	urlHavingLimit = umGetAccessLimit(url);
-	if (urlHavingLimit) {
-		group = umGetAccessLimitGroup(urlHavingLimit);
+    accessMeth_t	amRet;
+    char_t			*urlHavingLimit, *group;
 
-		if (group && *group) {
-			amRet = umGetGroupAccessMethod(group);
-		} else {
-			amRet = umGetAccessLimitMethod(urlHavingLimit);
-		}
+    urlHavingLimit = umGetAccessLimit(url);
+    if (urlHavingLimit) {
+        group = umGetAccessLimitGroup(urlHavingLimit);
 
-		bfree(B_L, urlHavingLimit);
-	} else {
-		amRet = AM_FULL;
-	}
+        if (group && *group) {
+            amRet = umGetGroupAccessMethod(group);
+        } else {
+            amRet = umGetAccessLimitMethod(urlHavingLimit);
+        }
 
-	return amRet;
+        bfree(B_L, urlHavingLimit);
+    } else {
+        amRet = AM_FULL;
+    }
+
+    return amRet;
 }
 
 /******************************************************************************/
@@ -1300,88 +1300,88 @@ accessMeth_t umGetAccessMethodForURL(char_t *url)
 
 bool_t umUserCanAccessURL(char_t *user, char_t *url)
 {
-	accessMeth_t	amURL;
-	char_t			*group, *usergroup, *urlHavingLimit;
-	short			priv;
-	
-	a_assert(user && *user);
-	a_assert(url && *url);
+    accessMeth_t	amURL;
+    char_t			*group, *usergroup, *urlHavingLimit;
+    short			priv;
 
-/*
- *	Make sure user exists
- */
-	if (!umUserExists(user)) {
-		return FALSE;
-	}
+    a_assert(user && *user);
+    a_assert(url && *url);
 
-/*
- *	Make sure user is enabled
- */
-	if (!umGetUserEnabled(user)) {
-		return FALSE;
-	}
+    /*
+     *	Make sure user exists
+     */
+    if (!umUserExists(user)) {
+        return FALSE;
+    }
 
-/*
- *	Make sure user has sufficient privileges (any will do)
- */
-	usergroup = umGetUserGroup(user);
-	priv = umGetGroupPrivilege(usergroup);
-	if (priv == 0) {
-		return FALSE;
-	}
+    /*
+     *	Make sure user is enabled
+     */
+    if (!umGetUserEnabled(user)) {
+        return FALSE;
+    }
 
-/*
- *	Make sure user's group is enabled
- */
-	if (!umGetGroupEnabled(usergroup)) {
-		return FALSE;
-	}
+    /*
+     *	Make sure user has sufficient privileges (any will do)
+     */
+    usergroup = umGetUserGroup(user);
+    priv = umGetGroupPrivilege(usergroup);
+    if (priv == 0) {
+        return FALSE;
+    }
 
-/*
- *	The access method of the user group must not be AM_NONE
- */
-	if (umGetGroupAccessMethod(usergroup) == AM_NONE) {
-		return FALSE;
-	}
+    /*
+     *	Make sure user's group is enabled
+     */
+    if (!umGetGroupEnabled(usergroup)) {
+        return FALSE;
+    }
 
-/*
- *	Check to see if there is an Access Limit for this URL
- */
-	urlHavingLimit = umGetAccessLimit(url);
-	if (urlHavingLimit) {
-		amURL = umGetAccessLimitMethod(urlHavingLimit);
-		group = umGetAccessLimitGroup(urlHavingLimit);
-		bfree(B_L, urlHavingLimit);
-	} else {
-/*
- *		If there isn't an access limit for the URL, user has full access
- */
-		return TRUE;
-	}
+    /*
+     *	The access method of the user group must not be AM_NONE
+     */
+    if (umGetGroupAccessMethod(usergroup) == AM_NONE) {
+        return FALSE;
+    }
 
-/*
- *	If the access method for the URL is AM_NONE then 
- *	the file "doesn't exist".
- */
-	if (amURL == AM_NONE) {
-		return FALSE;
-	} 
-	
-/*
- *	If Access Limit has a group specified, then the user must be a 
- *	member of that group
- */
-	if (group && *group) {
-		if (usergroup && (gstrcmp(group, usergroup) != 0)) {
-			return FALSE;
+    /*
+     *	Check to see if there is an Access Limit for this URL
+     */
+    urlHavingLimit = umGetAccessLimit(url);
+    if (urlHavingLimit) {
+        amURL = umGetAccessLimitMethod(urlHavingLimit);
+        group = umGetAccessLimitGroup(urlHavingLimit);
+        bfree(B_L, urlHavingLimit);
+    } else {
+        /*
+         *		If there isn't an access limit for the URL, user has full access
+         */
+        return TRUE;
+    }
 
-		}
-	} 
+    /*
+     *	If the access method for the URL is AM_NONE then
+     *	the file "doesn't exist".
+     */
+    if (amURL == AM_NONE) {
+        return FALSE;
+    }
 
-/*
- *	Otherwise, user can access the URL 
- */
-	return TRUE;
+    /*
+     *	If Access Limit has a group specified, then the user must be a
+     *	member of that group
+     */
+    if (group && *group) {
+        if (usergroup && (gstrcmp(group, usergroup) != 0)) {
+            return FALSE;
+
+        }
+    }
+
+    /*
+     *	Otherwise, user can access the URL
+     */
+    return TRUE;
 
 }
 
@@ -1392,21 +1392,21 @@ bool_t umUserCanAccessURL(char_t *user, char_t *url)
 
 static bool_t umCheckName(char_t *name)
 {
-	a_assert(name && *name);
+    a_assert(name && *name);
 
-	if (name && *name) {
-		while (*name) {
-			if (gisspace(*name)) {
-				return FALSE;
-			}
+    if (name && *name) {
+        while (*name) {
+            if (gisspace(*name)) {
+                return FALSE;
+            }
 
-			name++;
-		}
+            name++;
+        }
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 /******************************************************************************/

@@ -1,4 +1,4 @@
-/* 
+/*
  *	wsIntrn.h -- Internal GoAhead Web server header
  *
  * Copyright (c) GoAhead Software Inc., 1992-2010. All Rights Reserved.
@@ -6,13 +6,13 @@
  *	See the file "license.txt" for information on usage and redistribution
  *
  */
- 
+
 #ifndef _h_WEBS_INTERNAL
 #define _h_WEBS_INTERNAL 1
 
 /******************************** Description *********************************/
 
-/* 
+/*
  *	Internal GoAhead Web Server header. This defines the Web private APIs
  *	Include this header when you want to create URL handlers.
  */
@@ -27,70 +27,70 @@
 #include	<stdarg.h>
 
 #ifdef NETWARE
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<io.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<io.h>
 #endif
 
 #ifdef WIN
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<io.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<io.h>
 #define localtime_r(A, B)	localtime_s(B,A)
-	#include	<share.h>
+#include	<share.h>
 #define snprintf			_snprintf
 #endif
 
 #ifdef NW
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
 #endif
 
 #ifdef SCOV5
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<unistd.h>
 #endif
 
 #ifdef LYNX
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<unistd.h>
 #endif
 
 #ifdef UNIX
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<unistd.h>
 #endif
 
 #ifdef QNX4
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
-	#include	<signal.h>
-	#include	<unistd.h>
-	#include	<unix.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
+#include	<signal.h>
+#include	<unistd.h>
+#include	<unix.h>
 #endif
 
 #ifdef UW
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
 #endif
 
 #ifdef VXWORKS
-	#include	<vxWorks.h>
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
+#include	<vxWorks.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
 #endif
 
 #ifdef SOLARIS
-	#include	<macros.h>
-	#include	<fcntl.h>
-	#include	<sys/stat.h>
+#include	<macros.h>
+#include	<fcntl.h>
+#include	<sys/stat.h>
 #endif
 
 #include	"uemf.h"
@@ -98,7 +98,7 @@
 #include	"webs.h"
 
 /********************************** Defines ***********************************/
-/* 
+/*
  *	Read handler flags and state
  */
 #define WEBS_BEGIN			0x1			/* Beginning state */
@@ -116,71 +116,71 @@
 /*
  *	URL handler structure. Stores the leading URL path and the handler
  *	function to call when the URL path is seen.
- */ 
+ */
 typedef struct {
-	int		(*handler)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, 
-			char_t *url, char_t *path, 
-			char_t *query);					/* Callback URL handler function */
-	char_t	*webDir;						/* Web directory if required */
-	char_t	*urlPrefix;						/* URL leading prefix */
-	int		len;							/* Length of urlPrefix for speed */
-	int		arg;							/* Argument to provide to handler */
-	int		flags;							/* Flags */
+    int		(*handler)(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
+                       char_t *url, char_t *path,
+                       char_t *query);					/* Callback URL handler function */
+    char_t	*webDir;						/* Web directory if required */
+    char_t	*urlPrefix;						/* URL leading prefix */
+    int		len;							/* Length of urlPrefix for speed */
+    int		arg;							/* Argument to provide to handler */
+    int		flags;							/* Flags */
 } websUrlHandlerType;
 
-/* 
+/*
  *	Webs statistics
  */
 typedef struct {
-	long			errors;					/* General errors */
-	long			redirects;
-	long			net_requests;
-	long			activeNetRequests;
-	long			activeBrowserRequests;
-	long 			timeouts;
-	long			access;					/* Access violations */
-	long 			localHits;
-	long 			remoteHits;
-	long 			formHits;
-	long 			cgiHits;
-	long 			handlerHits;
+    long			errors;					/* General errors */
+    long			redirects;
+    long			net_requests;
+    long			activeNetRequests;
+    long			activeBrowserRequests;
+    long 			timeouts;
+    long			access;					/* Access violations */
+    long 			localHits;
+    long 			remoteHits;
+    long 			formHits;
+    long 			cgiHits;
+    long 			handlerHits;
 } websStatsType;
 
 extern websStatsType websStats;				/* Web access stats */
 
-/* 
+/*
  *	Error code list
  */
 typedef struct {
-	int		code;							/* HTTP error code */
-	char_t	*msg;							/* HTTP error message */
+    int		code;							/* HTTP error code */
+    char_t	*msg;							/* HTTP error message */
 } websErrorType;
 
-/* 
+/*
  *	Mime type list
  */
 typedef struct {
-	char_t	*type;							/* Mime type */
-	char_t	*ext;							/* File extension */
+    char_t	*type;							/* Mime type */
+    char_t	*ext;							/* File extension */
 } websMimeType;
 
 /*
  *	File information structure.
  */
 typedef struct {
-	unsigned long	size;					/* File length */
-	int				isDir;					/* Set if directory */
-	time_t			mtime;					/* Modified time */
+    unsigned long	size;					/* File length */
+    int				isDir;					/* Set if directory */
+    time_t			mtime;					/* Modified time */
 } websStatType;
 
 /*
  *	Compiled Rom Page Index
  */
 typedef struct {
-	char_t			*path;					/* Web page URL path */
-	unsigned char	*page;					/* Web page data */
-	int				size;					/* Size of web page in bytes */
-	int				pos;					/* Current read position */
+    char_t			*path;					/* Web page URL path */
+    unsigned char	*page;					/* Web page data */
+    int				size;					/* Size of web page in bytes */
+    int				pos;					/* Current read position */
 } websRomPageIndexType;
 
 /*
@@ -222,29 +222,29 @@ extern int		websBuildWhitelist(void);
 extern int		websWhitelistCheck(char *path);
 extern void		websDeleteWhitelist(void);
 #endif /* WEBS_WHITELIST_SUPPORT */
-extern int 		 websDefaultHandler(webs_t wp, char_t *urlPrefix, 
-					char_t *webDir, int arg, char_t *url, char_t *path, 
-					char_t *query);
+extern int 		 websDefaultHandler(webs_t wp, char_t *urlPrefix,
+                                    char_t *webDir, int arg, char_t *url, char_t *path,
+                                    char_t *query);
 extern int 		 websFormHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg, char_t *url, char_t *path, char_t *query);
 extern int 		 websCgiHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
-					int arg, char_t *url, char_t *path, char_t *query);
+                                int arg, char_t *url, char_t *path, char_t *query);
 extern void		 websCgiCleanup();
 extern int		 websCheckCgiProc(int handle);
 extern char_t	 *websGetCgiCommName();
 
 extern int		 websLaunchCgiProc(char_t *cgiPath, char_t **argp,
-					char_t **envp, char_t *stdIn, char_t *stdOut);
+                                   char_t **envp, char_t *stdIn, char_t *stdOut);
 extern int 		 websOpen(int sid);
-extern void 	 websResponse(webs_t wp, int code, char_t *msg, 
-					char_t *redirect);
+extern void 	 websResponse(webs_t wp, int code, char_t *msg,
+                              char_t *redirect);
 extern int 		 websJavaScriptEval(webs_t wp, char_t *script);
 extern int 		 websPageReadData(webs_t wp, char *buf, int nBytes);
 extern int		 websPageOpen(webs_t wp, char_t *lpath, char_t *path, int mode,
-					int perm);
+                              int perm);
 extern void		 websPageClose(webs_t wp);
 extern void		 websPageSeek(webs_t wp, long offset);
 extern int 	 	 websPageStat(webs_t wp, char_t *lpath, char_t *path,
-					websStatType *sbuf);
+                              websStatType *sbuf);
 extern int		 websPageIsDirectory(char_t *lpath);
 extern int 		 websRomOpen();
 extern void		 websRomClose();
@@ -253,11 +253,11 @@ extern void 	 websRomPageClose(int fd);
 extern int 		 websRomPageReadData(webs_t wp, char *buf, int len);
 extern int 	 	 websRomPageStat(char_t *path, websStatType *sbuf);
 extern long		 websRomPageSeek(webs_t wp, long offset, int origin);
-extern void 	 websSetRequestSocketHandler(webs_t wp, int mask, 
-					void (*fn)(webs_t wp));
+extern void 	 websSetRequestSocketHandler(webs_t wp, int mask,
+        void (*fn)(webs_t wp));
 extern int 		 websSolutionHandler(webs_t wp, char_t *urlPrefix,
-					char_t *webDir, int arg, char_t *url, char_t *path, 
-					char_t *query);
+                                     char_t *webDir, int arg, char_t *url, char_t *path,
+                                     char_t *query);
 extern void 	 websUrlHandlerClose();
 extern int 		 websUrlHandlerOpen();
 extern int 		 websOpenServer(int port, int retries);

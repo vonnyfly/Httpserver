@@ -1,4 +1,4 @@
-/* 
+/*
  *	websSSL.h -- MatrixSSL Layer Header
 
  *
@@ -11,8 +11,8 @@
 #define _h_websSSL 1
 
 /******************************** Description *********************************/
-/* 
- *	Header file for the PeerSec MatrixSSL layer. This defines the interface to 
+/*
+ *	Header file for the PeerSec MatrixSSL layer. This defines the interface to
  *	integrate MatrixSSL into the GoAhead Webserver.
  */
 
@@ -30,8 +30,8 @@
 #define DEFAULT_KEY_FILE    "./privkeySrv.pem"	/* Private key file */
 
 typedef struct {
-	sslConn_t* sslConn;
-	struct websRec* wp;
+    sslConn_t* sslConn;
+    struct websRec* wp;
 } websSSL_t;
 
 /*************************** User Code Prototypes *****************************/

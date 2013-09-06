@@ -464,7 +464,7 @@ void websReadEvent(webs_t wp)
 #endif
                 }
                 gwrite(fd, text, nbytes*2);
-				wprintf(L"----webReadEve=%s ,nbytes=%d\n",text,nbytes);
+                wprintf(L"----webReadEve=%s ,nbytes=%d\n",text,nbytes);
                 /*
                  * NOTE that the above comment is wrong -- if the content length
                  * is set, websGetInput() does NOT use socketGets(), it uses
@@ -690,7 +690,7 @@ static int websGetInput(webs_t wp, char_t **ptext, int *pnbytes)
         }
 #else
         nbytes = socketGets(wp->sid, &text);
-		wprintf(L"[vonnyfly] text=%s\n",text);
+        wprintf(L"[vonnyfly] text=%s\n",text);
 #endif
 
         if (nbytes < 0) {
@@ -1742,7 +1742,7 @@ int websWriteBlock(webs_t wp, char_t *buf, int nChars)
      *	not turned on then ballocUniToAsc will not do the conversion.
      */
     pBuf = asciiBuf = ballocUniToAsc(buf, nChars);
-	nChars = strlen(pBuf);
+    nChars = strlen(pBuf);
     //wprintf(L"nchars=%d\n",nChars);
 
     while (nChars > 0) {
